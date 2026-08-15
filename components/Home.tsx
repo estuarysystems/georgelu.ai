@@ -31,6 +31,8 @@ export function Home({ shelves }: { shelves: Shelf[] }) {
   const selectShelf = useCallback((next: number) => {
     setShelfIndex(next);
     setItemIndex(0);
+    // Persist only on real user selection so "back" restores the same focus.
+    sessionStorage.setItem("home:shelf", String(next));
   }, []);
 
   useEffect(() => {
@@ -44,10 +46,6 @@ export function Home({ shelves }: { shelves: Shelf[] }) {
     }
     stageRef.current?.focus();
   }, [shelves.length]);
-
-  useEffect(() => {
-    sessionStorage.setItem("home:shelf", String(shelfIndex));
-  }, [shelfIndex]);
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

@@ -57,12 +57,16 @@ export default async function EssayPage({
 
       <footer className="essay-foot">
         {prev ? (
-          <Link href={`/${shelf}/${prev.slug}`}>← {prev.name.toLowerCase()}</Link>
+          <Link href={`/${shelf}/${prev.slug}`} replace>
+            ← {prev.name.toLowerCase()}
+          </Link>
         ) : (
           <span className="spacer">·</span>
         )}
         {next ? (
-          <Link href={`/${shelf}/${next.slug}`}>{next.name.toLowerCase()} →</Link>
+          <Link href={`/${shelf}/${next.slug}`} replace>
+            {next.name.toLowerCase()} →
+          </Link>
         ) : (
           <span className="spacer">·</span>
         )}

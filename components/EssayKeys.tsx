@@ -17,7 +17,8 @@ export function EssayKeys({
       if (e.key === "Escape" || e.key === "ArrowLeft") {
         if (e.key === "ArrowLeft" && prev) {
           e.preventDefault();
-          router.push(prev);
+          // Replace so sibling hops don't stack history; esc/back returns home.
+          router.replace(prev);
           return;
         }
         if (e.key === "Escape") {
@@ -27,7 +28,7 @@ export function EssayKeys({
         }
       } else if (e.key === "ArrowRight" && next) {
         e.preventDefault();
-        router.push(next);
+        router.replace(next);
       }
     }
     window.addEventListener("keydown", onKey);

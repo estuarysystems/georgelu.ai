@@ -131,7 +131,8 @@ button {
   grid-template-columns: 6.4rem minmax(0, 1fr);
   align-items: center;
   min-height: 1.6rem;
-  animation: fade-up var(--dur) var(--ease) both;
+  opacity: 1;
+  animation: fade-up var(--dur) var(--ease) backwards;
   animation-delay: calc(60ms + var(--i, 0) * 45ms);
 }
 

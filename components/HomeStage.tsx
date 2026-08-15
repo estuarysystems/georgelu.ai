@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ObjectIcon } from "./ObjectIcon";
 import { essayHref } from "@/lib/routes";
 import type { EssayMeta, Shelf, ShelfId } from "@/lib/types";
@@ -24,23 +24,27 @@ function itemIndexOf(shelf: Shelf, slug?: string) {
 
 export function HomeStage({ catalog }: HomeStageProps) {
   const router = useRouter();
-  const params = useSearchParams();
-  const initialShelf = params.get("shelf") ?? undefined;
-  const initialItem = params.get("item") ?? undefined;
-  const startShelf = shelfIndexOf(catalog, initialShelf);
-  const [shelfIndex, setShelfIndex] = useState(startShelf);
-  const [itemIndex, setItemIndex] = useState(() =>
-    itemIndexOf(catalog[startShelf], initialItem),
-  );
-  const [mode, setMode] = useState<"shelf" | "item">(initialItem ? "item" : "shelf");
-  const [hint, setHint] = useState(false);
+  const [shelfIndex, setShelfIndex] = useState(0);
+  const [itemIndex, setItemIndex] = useState(0);
+  const [mode, setMode] = useState<"shelf" | "item">("shelf");
+  const [hint, setHint] = useState(true);
 
   const shelf = catalog[shelfIndex];
   const item = shelf.items[itemIndex] ?? shelf.items[0];
 
   useEffect(() => {
-    setHint(window.sessionStorage.getItem(HINT_KEY) !== "1");
-  }, []);
+    if (window.sessionStorage.getItem(HINT_KEY) === "1") setHint(false);
+
+    const params = new URLSearchParams(window.location.search);
+    const shelfParam = params.get("shelf") ?? undefined;
+    const itemParam = params.get("item") ?? undefined;
+    if (!shelfParam) return;
+
+    const nextShelf = shelfIndexOf(catalog, shelfParam);
+    setShelfIndex(nextShelf);
+    setItemIndex(itemIndexOf(catalog[nextShelf], itemParam));
+    if (itemParam) setMode("item");
+  }, [catalog]);
 
   const dismissHint = useCallback(() => {
     setHint(false);

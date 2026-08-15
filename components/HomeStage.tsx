@@ -158,8 +158,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
                           <Sibling
                             item={siblings.above}
                             place="above"
-                            onFocus={() => focusItem(itemIndex - 1)}
-                            onOpen={() => openEssay(siblings.above!)}
+                            onOpen={openEssay}
                           />
                         ) : null}
                         <article className="item is-open">
@@ -186,8 +185,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
                           <Sibling
                             item={siblings.below}
                             place="below"
-                            onFocus={() => focusItem(itemIndex + 1)}
-                            onOpen={() => openEssay(siblings.below!)}
+                            onOpen={openEssay}
                           />
                         ) : null}
                       </>
@@ -216,22 +214,15 @@ export function HomeStage({ catalog }: HomeStageProps) {
 function Sibling({
   item,
   place,
-  onFocus,
   onOpen,
 }: {
   item: EssayMeta;
   place: "above" | "below";
-  onFocus: () => void;
-  onOpen: () => void;
+  onOpen: (target: EssayMeta) => void;
 }) {
   return (
     <article className={`item is-sibling is-${place}`}>
-      <button
-        className="item-hit"
-        type="button"
-        onClick={onFocus}
-        onDoubleClick={onOpen}
-      >
+      <button className="item-hit" type="button" onClick={() => onOpen(item)}>
         <ObjectIcon name={item.name} file={item.object} />
         <div className="item-copy">
           <p className="item-name">{item.name}</p>

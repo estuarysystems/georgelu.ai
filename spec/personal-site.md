@@ -92,7 +92,7 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 ## v0 contents
 
 ### me
-- **George** — bio card (required). Object: a well-made shoe, or a paperback, or a single playing card. Pick one physical thing he actually owns.
+- **George** — bio card (required). Object: a paperback.
 - **Now** — SF Social Club, books, the monthly card show. Short, dated, replaceable.
 
 ### world
@@ -116,7 +116,7 @@ Sports (bouldering, badminton) stay off the bar until there is something to say 
 
 | Shelf  | Object                         |
 |--------|--------------------------------|
-| me     | One owned object (shoe / book / card) |
+| me     | A paperback                    |
 | world  | A pressed shirt on a hanger    |
 | work   | A manila case folder           |
 | making | A Pokémon card in a sleeve     |
@@ -127,6 +127,5 @@ CMS, comments, newsletter, tags, RSS (add after ≥3 world essays), social icon 
 
 ## Open
 
-- Which owned object is the me icon
 - Light / dark / auto (default: auto)
 - Stack: static home + MDX essays on Vercel. No backend.

@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ObjectIcon } from "./ObjectIcon";
 import { essayHref } from "@/lib/routes";
@@ -24,6 +25,7 @@ function itemIndexOf(shelf: Shelf, slug?: string) {
 
 export function HomeStage({ catalog }: HomeStageProps) {
   const router = useRouter();
+  const stageRef = useRef<HTMLDivElement>(null);
   const [shelfIndex, setShelfIndex] = useState(0);
   const [itemIndex, setItemIndex] = useState(0);
   const [mode, setMode] = useState<"shelf" | "item">("shelf");
@@ -38,12 +40,14 @@ export function HomeStage({ catalog }: HomeStageProps) {
     const params = new URLSearchParams(window.location.search);
     const shelfParam = params.get("shelf") ?? undefined;
     const itemParam = params.get("item") ?? undefined;
-    if (!shelfParam) return;
+    if (shelfParam) {
+      const nextShelf = shelfIndexOf(catalog, shelfParam);
+      setShelfIndex(nextShelf);
+      setItemIndex(itemIndexOf(catalog[nextShelf], itemParam));
+      if (itemParam) setMode("item");
+    }
 
-    const nextShelf = shelfIndexOf(catalog, shelfParam);
-    setShelfIndex(nextShelf);
-    setItemIndex(itemIndexOf(catalog[nextShelf], itemParam));
-    if (itemParam) setMode("item");
+    stageRef.current?.focus({ preventScroll: true });
   }, [catalog]);
 
   const dismissHint = useCallback(() => {
@@ -60,27 +64,29 @@ export function HomeStage({ catalog }: HomeStageProps) {
   );
 
   const focusShelf = useCallback(
-    (next: number) => {
+    (next: number, nextItem = 0) => {
       const clamped = (next + catalog.length) % catalog.length;
       const nextShelf = catalog[clamped];
-      const nextItem = Math.min(itemIndex, nextShelf.items.length - 1);
+      const itemCount = nextShelf.items.length;
+      const resolved = ((nextItem % itemCount) + itemCount) % itemCount;
       setShelfIndex(clamped);
-      setItemIndex(nextItem);
+      setItemIndex(resolved);
       setMode("shelf");
-      syncUrl(nextShelf.id, nextShelf.items[nextItem].slug);
+      syncUrl(nextShelf.id, nextShelf.items[resolved].slug);
       dismissHint();
     },
-    [catalog, dismissHint, itemIndex, syncUrl],
+    [catalog, dismissHint, syncUrl],
   );
 
   const focusItem = useCallback(
     (next: number) => {
       const count = shelf.items.length;
-      const clamped = (next + count) % count;
-      setItemIndex(clamped);
+      if (next < 0 || next >= count) return false;
+      setItemIndex(next);
       setMode("item");
-      syncUrl(shelf.id, shelf.items[clamped].slug);
+      syncUrl(shelf.id, shelf.items[next].slug);
       dismissHint();
+      return true;
     },
     [dismissHint, shelf, syncUrl],
   );
@@ -93,16 +99,30 @@ export function HomeStage({ catalog }: HomeStageProps) {
     [dismissHint, router],
   );
 
+  const moveVertical = useCallback(
+    (direction: 1 | -1) => {
+      if (mode === "item") {
+        const nextItem = itemIndex + direction;
+        if (focusItem(nextItem)) return;
+        const nextShelf = shelfIndex + direction;
+        focusShelf(nextShelf, direction > 0 ? 0 : -1);
+        return;
+      }
+      focusShelf(shelfIndex + direction, direction > 0 ? 0 : -1);
+    },
+    [focusItem, focusShelf, itemIndex, mode, shelfIndex],
+  );
+
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        if (mode === "item") focusItem(itemIndex + 1);
-        else focusShelf(shelfIndex + 1);
+        moveVertical(1);
       } else if (event.key === "ArrowUp") {
         event.preventDefault();
-        if (mode === "item") focusItem(itemIndex - 1);
-        else focusShelf(shelfIndex - 1);
+        moveVertical(-1);
       } else if (event.key === "ArrowRight" || event.key === "Enter") {
         event.preventDefault();
         if (mode === "shelf") {
@@ -112,14 +132,18 @@ export function HomeStage({ catalog }: HomeStageProps) {
           openEssay(item);
         }
       } else if (event.key === "ArrowLeft" || event.key === "Escape") {
+        if (event.repeat) return;
         event.preventDefault();
-        if (mode === "item") setMode("shelf");
+        if (mode === "item") {
+          setMode("shelf");
+          dismissHint();
+        }
       }
     }
 
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [dismissHint, focusItem, focusShelf, item, itemIndex, mode, openEssay, shelfIndex]);
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [dismissHint, item, mode, moveVertical, openEssay]);
 
   const siblings = useMemo(() => {
     if (mode !== "item") return { above: undefined, below: undefined };
@@ -130,7 +154,13 @@ export function HomeStage({ catalog }: HomeStageProps) {
   }, [itemIndex, mode, shelf.items]);
 
   return (
-    <div className="stage" role="application" aria-label="George Lu">
+    <div
+      ref={stageRef}
+      className="stage"
+      role="application"
+      aria-label="George Lu"
+      tabIndex={-1}
+    >
       <div className="stage-breath">
         <div className="stage-weave">
           <div className="shelves">
@@ -147,6 +177,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
                   <button
                     className="shelf-label"
                     type="button"
+                    onMouseDown={(event) => event.preventDefault()}
                     onClick={() => focusShelf(index)}
                   >
                     {entry.id}
@@ -154,18 +185,12 @@ export function HomeStage({ catalog }: HomeStageProps) {
                   <div className="shelf-body">
                     {active && current ? (
                       <>
-                        {siblings.above ? (
-                          <Sibling
-                            item={siblings.above}
-                            place="above"
-                            onOpen={openEssay}
-                          />
-                        ) : null}
+                        {siblings.above ? <Sibling item={siblings.above} place="above" /> : null}
                         <article className="item is-open">
-                          <button
+                          <Link
                             className="item-hit"
-                            type="button"
-                            onClick={() => openEssay(current)}
+                            href={essayHref(current.shelf, current.slug)}
+                            onClick={dismissHint}
                           >
                             <ObjectIcon name={current.name} file={current.object} live />
                             <div className="item-copy">
@@ -179,15 +204,9 @@ export function HomeStage({ catalog }: HomeStageProps) {
                                 <p className="item-blurb">{current.blurb}</p>
                               ) : null}
                             </div>
-                          </button>
+                          </Link>
                         </article>
-                        {siblings.below ? (
-                          <Sibling
-                            item={siblings.below}
-                            place="below"
-                            onOpen={openEssay}
-                          />
-                        ) : null}
+                        {siblings.below ? <Sibling item={siblings.below} place="below" /> : null}
                       </>
                     ) : null}
                   </div>
@@ -214,21 +233,19 @@ export function HomeStage({ catalog }: HomeStageProps) {
 function Sibling({
   item,
   place,
-  onOpen,
 }: {
   item: EssayMeta;
   place: "above" | "below";
-  onOpen: (target: EssayMeta) => void;
 }) {
   return (
     <article className={`item is-sibling is-${place}`}>
-      <button className="item-hit" type="button" onClick={() => onOpen(item)}>
+      <Link className="item-hit" href={essayHref(item.shelf, item.slug)}>
         <ObjectIcon name={item.name} file={item.object} />
         <div className="item-copy">
           <p className="item-name">{item.name}</p>
           <p className="item-title">{item.title}</p>
         </div>
-      </button>
+      </Link>
     </article>
   );
 }

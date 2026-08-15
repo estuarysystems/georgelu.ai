@@ -19,13 +19,14 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        router.push(back);
+      if (event.key !== "Escape" || event.repeat || event.metaKey || event.ctrlKey || event.altKey) {
+        return;
       }
+      event.preventDefault();
+      router.push(back);
     }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
   }, [back, router]);
 
   return (

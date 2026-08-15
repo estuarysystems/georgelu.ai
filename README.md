@@ -4,8 +4,21 @@ Personal site. Spec is in [`spec/personal-site.md`](spec/personal-site.md).
 
 Domain: [georgelu.ai](https://georgelu.ai)
 
-Home is a vertical console menu (me, world, work, making). Items open essay pages.
+A hobby-resume you drive like a console. Home is a vertical XMB (me, world, work, making). Items open MDX essays.
 
-## Deploy
+## Stack
 
-Connect this repo to Vercel. The site itself is not in the repo yet — only the spec. Build from the spec, then deploy the app on Vercel and point the domain.
+Static Next.js app. MDX essays. No backend. Deploy on Vercel and point the domain.
+
+```bash
+npm install
+npm run dev
+```
+
+```bash
+npm run build
+```
+
+## Contents
+
+Eleven essays on four shelves. Theme follows the system (auto). Accent color is light-mode links only.

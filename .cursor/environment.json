@@ -1,6 +1,6 @@
 {
   "name": "georgelu.ai",
-  "install": "npm ci",
+  "install": "npm ci --include=dev",
   "terminals": [
     {
       "name": "dev",

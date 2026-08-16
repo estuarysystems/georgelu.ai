@@ -13,9 +13,9 @@ Tone: warm, very direct. He will say the sharp thing and mean it. Not a dunk acc
 
 ## Off the site
 
-Do not publish: Elon support, Bitcoin-believer identity, Palo Alto (say Bay Area), traveling-as-hobby, anything framed as “coming soon.”
+Do not publish: Elon support, Palo Alto (say Bay Area), traveling-as-hobby, anything framed as “coming soon.”
 
-Bitcoin may become a world essay later. It is not on the v0 bar.
+Bitcoin is not a shelf item yet. Library holds *Broken Money*. A world essay (college + Bitcoin + dress) comes later, when he writes it.
 
 ## Machine
 
@@ -25,7 +25,7 @@ Two surfaces only.
 
 **Essay.** A normal reading page. Back returns to the same focus you left. Prev/next siblings on the same shelf.
 
-No blog index, no tags, no search in v0.
+Unlisted `/all` is a flat essay list by shelf. Not on the bar. No tags, no search, no comments.
 
 ## Shelves
 
@@ -59,12 +59,14 @@ The only home card that may hold a short essay in place. Longer bio is an essay.
 
 George Lu. Bay Area. I work the intersection of business and engineering through my AI agency, Estuary Systems LLC.
 
+I have a corgi named Biscuit.
+
 No claims-system line. No “stuff on my mind” list.
 
 ## Essay page
 
 - Max width ~640–720px. Prose column `58ch`.
-- Top bar: `esc` / back, frame number (`03 / 12`).
+- Top bar: `esc` / back, frame number (`03 / 13`).
 - Title, optional dek, body. Images are objects, not heroes.
 - Footer: prev / next on the same shelf, lowercase.
 - No share, no related, no comments.
@@ -90,23 +92,25 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 ## v0 contents
 
 ### me
-- **George** — bio card (required). Object: a paperback.
-- **Now** — SF Social Club, books, the monthly card show. Short, dated, replaceable.
+- **George** — bio card (required). Object: a paperback. One line for Biscuit, his corgi.
+- **Biscuit** — Small me item. His corgi. Short, warm, first person. No photo until he sends pictures. Do not generate a dog photo. Reuse the me paperback; no fake object.
+- **Now** — Westgate card show (September 5–6 2026), books. Short, dated, replaceable. Social Club lives on Poker.
+- **Library** — S and A only. Do not rank inside a tier. Do not list B/C. “If it is not here I am not recommending it.” Write-ups later. S: *Poor Charlie’s Almanack* (Charlie Munger); *Broken Money* by Lyn Alden (he thinks the world runs on economics; this is how he understands it). A: none yet.
 
 ### world
 - **Dress** — People embody the success they want before they take action. Dressing is one way. The room with seven suits and one person without: that person is the most important. That idea is why tech dresses casually. He thinks that is a bad thing. Dress to show you care, and that you want to be pleasant to be around.
-- **Home** — Why a stay-at-home spouse matters to him. Write it as an argument about care and a life, not a culture-war post.
-- **School** — College is a bad place to send a kid and a bad way to spend years. Building and doing business in the real world is the better path.
+- **Home** — Why a stay-at-home spouse matters to him. Write it as an argument about care and a life, not a culture-war post. Stay-at-home cost-comparison link later (he will add).
+- **School** — College is a bad place to send a kid and a bad way to spend years. Building and doing business in the real world is the better path. Full rewrite later (he will write it): start doing stuff, provide value, find problems; judged on solving problems, especially guys. Leave the live essay as-is until then.
 
 ### work
-- **Estuary** — The AI agency. The intersection of business and engineering. Link out to https://estuarysystems.ai. No client names, retainers, dollar amounts, or capabilities list.
-- **Claims** — A system to litigate claims law firms will not take. Fighting for the small guy. This is the clearest “why I build” piece.
+- **Estuary** — One sentence only: he focuses on execution using AI and stays up to date on the latest AI tools to be efficient. Link out to https://estuarysystems.ai. No claims, no Conveyor, no clients, no dollar amounts.
+- **Claims** — Leave as-is. Do not expand. No Conveyor or client names. A system to litigate claims law firms will not take. Fighting for the small guy.
 
 ### hobby
-- **Cards** — Pokémon. Card shows every month. This is a real practice, not a childhood footnote.
+- **Cards** — Pokémon. Next show: Westgate, September 5–6 2026, Saturday–Sunday. Dated, replaceable. This is a real practice, not a childhood footnote.
 - **Server** — The Minecraft server he never got to run as a kid. Building it now.
-- **Poker** — Hobby, and the SF Social Club scene. Play, not hustle-porn.
-- **TFT** — Top 100 once. One short page. Proof he will grind a system.
+- **Poker** — He plays poker. SF Social Club is part of that scene. “A lot of things” stay vague. No stakes. Principles later (he will write them). Do not invent those write-ups.
+- **TFT** — Top 100 once. Set 11. One short line. A link and how it impacted him later (he will add).
 
 Sports (bouldering, badminton) stay off the bar until there is something to say besides “I do this.”
 
@@ -121,7 +125,7 @@ Sports (bouldering, badminton) stay off the bar until there is something to say 
 
 ## Out of scope (v0)
 
-CMS, comments, newsletter, tags, RSS (add after ≥3 world essays), social icon row, analytics beyond a quiet page hit, a fifth shelf.
+CMS, comments, newsletter, tags, search, RSS (add after ≥3 world essays), social icon row, analytics beyond a quiet page hit, a fifth shelf, auth.
 
 ## Open
 

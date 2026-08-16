@@ -257,6 +257,7 @@ function BioCard() {
         George Lu. Bay Area. I work the intersection of business and engineering
         through my AI agency, Estuary Systems LLC.
       </p>
+      <p>I have a corgi named Biscuit.</p>
     </div>
   );
 }

@@ -52,7 +52,8 @@ a {
 }
 
 @media (prefers-color-scheme: light) {
-  .prose a {
+  .prose a,
+  .index a {
     color: var(--accent);
   }
 }
@@ -456,6 +457,58 @@ button {
 
 .prose p {
   margin: 0;
+}
+
+.prose h2 {
+  margin: 1.7em 0 0.55em;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.prose ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prose li + li {
+  margin-top: 0.7em;
+}
+
+.index {
+  width: min(58ch, 100%);
+  margin-top: 2rem;
+  font-size: 16px;
+  line-height: 1.62;
+  letter-spacing: -0.003em;
+}
+
+.index-shelf + .index-shelf {
+  margin-top: 2.1rem;
+}
+
+.index-shelf h2 {
+  margin: 0 0 0.65rem;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.index-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.index-list li + li {
+  margin-top: 0.45rem;
+}
+
+.index-title {
+  color: var(--muted);
 }
 
 .prose strong {

@@ -21,4 +21,4 @@ npm run build
 
 ## Contents
 
-Twelve essays on four shelves. Unlisted `/all` lists every essay by shelf. Theme follows the system (auto). Accent color is light-mode links only.
+Thirteen essays on four shelves. Unlisted `/all` lists every essay by shelf. Theme follows the system (auto). Accent color is light-mode links only.

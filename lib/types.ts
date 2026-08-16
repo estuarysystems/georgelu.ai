@@ -1,4 +1,4 @@
-export const SHELF_IDS = ["me", "world", "work", "making"] as const;
+export const SHELF_IDS = ["me", "world", "work", "hobby"] as const;
 
 export type ShelfId = (typeof SHELF_IDS)[number];
 

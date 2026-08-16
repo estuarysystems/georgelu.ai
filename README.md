@@ -4,7 +4,7 @@ Personal site. Spec is in [`spec/personal-site.md`](spec/personal-site.md).
 
 Domain: [georgelu.ai](https://georgelu.ai)
 
-A hobby-resume you drive like a console. Home is a vertical XMB (me, world, work, making). Items open MDX essays.
+A hobby-resume you drive like a console. Home is a vertical XMB (me, world, work, hobby). Items open MDX essays.
 
 ## Stack
 

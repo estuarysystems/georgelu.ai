@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s — George Lu",
   },
   description:
-    "George Lu. Bay Area. The seam between business and engineering. Estuary Systems, and a claims system for people law firms will not represent.",
+    "George Lu. Bay Area. I work the intersection of business and engineering through my AI agency, Estuary Systems LLC.",
   metadataBase: new URL("https://georgelu.ai"),
 };
 

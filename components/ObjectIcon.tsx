@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 type ObjectIconProps = {
   name: string;
   file: string;
@@ -8,7 +10,12 @@ export function ObjectIcon({ name, file, live = false }: ObjectIconProps) {
   return (
     <div
       className={`object-icon${live ? " is-live" : ""}`}
-      style={{ backgroundImage: `url(/objects/${file}-strip.webp)` }}
+      style={
+        {
+          "--object-still": `url(/objects/${file}.png)`,
+          "--object-strip": `url(/objects/${file}-strip.webp)`,
+        } as CSSProperties
+      }
       role="img"
       aria-label={name}
     >

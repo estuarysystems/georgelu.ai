@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { inter } from "@/app/fonts";
 import { essayHref, homeHref, padFrame } from "@/lib/routes";
 import type { EssayMeta } from "@/lib/types";
 
@@ -42,7 +43,7 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
       <div className="essay-main">
         <h1 className="essay-title">{current.title}</h1>
         {current.dek ? <p className="essay-dek">{current.dek}</p> : null}
-        <div className="prose">{children}</div>
+        <div className={`prose ${inter.className}`}>{children}</div>
       </div>
       <nav className="essay-nav" aria-label="Siblings">
         {prev ? (

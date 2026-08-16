@@ -142,6 +142,11 @@ button {
 
 .shelf[aria-current="true"] {
   z-index: 2;
+  flex-shrink: 0;
+}
+
+.shelf[aria-current="true"] .shelf-body {
+  min-height: min-content;
 }
 
 .shelf-label {
@@ -164,6 +169,7 @@ button {
   position: relative;
   z-index: 1;
   min-height: 0;
+  overflow: visible;
 }
 
 .item {
@@ -221,14 +227,28 @@ button {
   flex: 0 0 var(--icon);
   width: var(--icon);
   height: var(--icon);
+  overflow: visible;
+  background-color: transparent;
+  background-image: var(--object-still);
   background-repeat: no-repeat;
-  background-size: 6000% 100%;
-  background-position: 0 0;
+  background-size: contain;
+  background-position: center;
   filter: grayscale(0.92) contrast(1.04);
 }
 
-.object-icon.is-live {
-  animation: object-strip 2s steps(60) infinite;
+.object-icon.is-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--object-strip);
+  background-repeat: no-repeat;
+  background-size: 6000% 100%;
+  background-position: 0 0;
+  animation: object-strip 2s steps(59) infinite;
+}
+
+.object-icon.is-live .viewfinder {
+  z-index: 1;
 }
 
 .viewfinder {
@@ -420,6 +440,7 @@ button {
 }
 
 .prose {
+  width: min(58ch, 100%);
   max-width: 58ch;
   margin-top: 2rem;
   font-family: var(--font-prose), var(--font-chrome);
@@ -536,7 +557,7 @@ button {
     background-position: 0 0;
   }
   to {
-    background-position: -6000% 0;
+    background-position: calc(var(--icon) * -59) 0;
   }
 }
 
@@ -546,7 +567,7 @@ button {
   }
 
   .stage-grain,
-  .object-icon.is-live,
+  .object-icon.is-live::after,
   .item,
   .shelf-label,
   .item-hit,

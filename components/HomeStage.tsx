@@ -254,19 +254,9 @@ function BioCard() {
   return (
     <div className="bio-card">
       <p>
-        George Lu. Bay Area. I work the seam between business and engineering. I
-        take on problems I can see, then build the company or the tool.
+        George Lu. Bay Area. I work the intersection of business and engineering
+        through my AI agency, Estuary Systems LLC.
       </p>
-      <p>
-        Right now that is Estuary Systems, an AI agency, and a claims system for
-        people law firms will not represent.
-      </p>
-      <p>Stuff on my mind:</p>
-      <ul>
-        <li>how people dress and carry themselves</li>
-        <li>Building in the real world instead of collecting credentials</li>
-        <li>Privacy and security in a world of new AI products</li>
-      </ul>
     </div>
   );
 }

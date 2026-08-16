@@ -36,7 +36,7 @@ Vertical column, top to bottom:
 | me      | Who he is                   | Stay or essay |
 | world   | What he thinks is important | Essay |
 | work    | What he has built for money or a client | Essay |
-| making  | Hobbies and things he keeps | Essay |
+| hobby   | Hobbies and things he keeps | Essay |
 
 Default focus: **me**.
 
@@ -53,15 +53,13 @@ Focused item may scale `0.78 → 1` and unfold a short blurb beside a 144px obje
 
 ### Me card
 
-The only home card that may hold a short essay in place: name, 2–4 sentences, then a short list. Longer bio is an essay.
+The only home card that may hold a short essay in place. Longer bio is an essay.
 
-**Bio (draft, edit in his voice):**
+**Bio (locked, his voice):**
 
-George Lu. Bay Area. I work the seam between business and engineering. I take on problems I can see, then build the company or the tool.
+George Lu. Bay Area. I work the intersection of business and engineering through my AI agency, Estuary Systems LLC.
 
-Right now that is Estuary Systems, an AI agency, and a claims system for people law firms will not represent.
-
-Stuff on my mind: how people dress and carry themselves. Building in the real world instead of collecting credentials. Privacy and security in a world of new AI products.
+No claims-system line. No “stuff on my mind” list.
 
 ## Essay page
 
@@ -87,7 +85,7 @@ Kelindi’s material, not his icons.
 
 ## Voice
 
-Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp; he does not perform contempt. No “passionate about.” No “responsible for.” Work entries are dated and specific. World essays argue. Making entries show the thing.
+Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp; he does not perform contempt. No “passionate about.” No “responsible for.” Work entries are dated and specific. World essays argue. Hobby entries show the thing.
 
 ## v0 contents
 
@@ -96,15 +94,15 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 - **Now** — SF Social Club, books, the monthly card show. Short, dated, replaceable.
 
 ### world
-- **Dress** — Bringing back the social norm of looking like you meant to leave the house. The America in good books and movies, where people wear clothes on purpose.
+- **Dress** — People embody the success they want before they take action. Dressing is one way. The room with seven suits and one person without: that person is the most important. That idea is why tech dresses casually. He thinks that is a bad thing. Dress to show you care, and that you want to be pleasant to be around.
 - **Home** — Why a stay-at-home spouse matters to him. Write it as an argument about care and a life, not a culture-war post.
 - **School** — College is a bad place to send a kid and a bad way to spend years. Building and doing business in the real world is the better path.
 
 ### work
-- **Estuary** — The AI agency. What he actually does there. New AI products, with a real interest in security and privacy, not a market take.
+- **Estuary** — The AI agency. The intersection of business and engineering. Link out to https://estuarysystems.ai. No client names, retainers, dollar amounts, or capabilities list.
 - **Claims** — A system to litigate claims law firms will not take. Fighting for the small guy. This is the clearest “why I build” piece.
 
-### making
+### hobby
 - **Cards** — Pokémon. Card shows every month. This is a real practice, not a childhood footnote.
 - **Server** — The Minecraft server he never got to run as a kid. Building it now.
 - **Poker** — Hobby, and the SF Social Club scene. Play, not hustle-porn.
@@ -119,7 +117,7 @@ Sports (bouldering, badminton) stay off the bar until there is something to say 
 | me     | A paperback                    |
 | world  | A pressed shirt on a hanger    |
 | work   | A manila case folder           |
-| making | A Pokémon card in a sleeve     |
+| hobby  | A Pokémon card in a sleeve     |
 
 ## Out of scope (v0)
 

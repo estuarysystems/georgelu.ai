@@ -1,0 +1,20 @@
+# Build context only needs source, lockfile, and public/content assets.
+.git
+.github
+.gitignore
+.cursor
+.next
+out
+node_modules
+npm-debug.log
+*.log
+.env
+.env.*
+Dockerfile
+.dockerignore
+cloudbuild.yaml
+vercel.json
+README.md
+spec
+*.md
+.DS_Store

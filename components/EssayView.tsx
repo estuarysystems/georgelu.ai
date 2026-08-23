@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { inter } from "@/app/fonts";
 import { essayHref, homeHref, padFrame } from "@/lib/routes";
+import { setEssaySurface } from "@/lib/surface";
 import type { EssayMeta } from "@/lib/types";
 
 type EssayViewProps = {
@@ -17,23 +18,53 @@ type EssayViewProps = {
 export function EssayView({ current, prev, next, children }: EssayViewProps) {
   const router = useRouter();
   const back = homeHref(current.shelf, current.slug);
+  const closing = useRef(false);
+  const [visible, setVisible] = useState(true);
 
-  useEffect(() => {
+  const closeToShelf = useCallback(() => {
+    if (closing.current) return;
+    closing.current = true;
+    setVisible(false);
+    setEssaySurface(false);
+    router.replace(back);
+    window.setTimeout(() => {
+      if (!document.querySelector(".stage")) {
+        window.location.replace(back);
+      }
+    }, 200);
+  }, [back, router]);
+
+  useLayoutEffect(() => {
+    setEssaySurface(true);
     function onKey(event: KeyboardEvent) {
       if (event.key !== "Escape" || event.repeat || event.metaKey || event.ctrlKey || event.altKey) {
         return;
       }
       event.preventDefault();
-      router.replace(back);
+      event.stopImmediatePropagation();
+      closeToShelf();
     }
     window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, [back, router]);
+    return () => {
+      setEssaySurface(false);
+      window.removeEventListener("keydown", onKey, true);
+    };
+  }, [closeToShelf]);
+
+  if (!visible) return null;
 
   return (
-    <article className="essay">
+    <article className="essay" data-surface="essay">
       <header className="essay-bar">
-        <Link className="essay-back" href={back} replace>
+        <Link
+          className="essay-back"
+          href={back}
+          replace
+          onClick={(event) => {
+            event.preventDefault();
+            closeToShelf();
+          }}
+        >
           esc
         </Link>
         <span className="essay-frame">
@@ -47,12 +78,14 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
       </div>
       <nav className="essay-nav" aria-label="Siblings">
         {prev ? (
-          <Link href={essayHref(prev.shelf, prev.slug)}>← {prev.name.toLowerCase()}</Link>
+          <Link href={essayHref(prev.shelf, prev.slug)} replace>
+            ← {prev.name.toLowerCase()}
+          </Link>
         ) : (
           <span />
         )}
         {next ? (
-          <Link className="next" href={essayHref(next.shelf, next.slug)}>
+          <Link className="next" href={essayHref(next.shelf, next.slug)} replace>
             {next.name.toLowerCase()} →
           </Link>
         ) : null}

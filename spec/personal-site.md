@@ -23,7 +23,7 @@ Two surfaces only.
 
 **Home.** Full viewport (`100dvh`). Four shelves in a **vertical column**, top to bottom. All four stay at full opacity. No distance fade, no blur-on-distance. Up/down browses shelves (and items once a shelf is open). Right opens that shelf’s items; left or Escape returns to the shelf. Enter or click opens the essay. ArrowRight never opens an essay. Mouse and touch: click/tap. Keyboard is first-class (arrows, enter, escape).
 
-**Essay.** A normal reading page. Shareable path is `/<shelf>/<slug>`. One Escape / Back `replace`s to the same home URL (`/?shelf=&item=`) in shelf mode, with the collapse visible — so Back never bounces between the two shapes. Prev/next siblings on the same shelf.
+**Essay.** A normal reading page. Shareable path is `/<shelf>/<slug>`. Open `push`es that path once. One Escape hides the essay in the same tick and `replace`s to `/?shelf=<id>&item=<slug>` in shelf mode (visible collapse). Browser Back from an essay is the same one-step return — no ghost `/<shelf>/<slug>` leftover. Sibling prev/next `replace` the essay path so essays do not stack. Cold `/<shelf>/<slug>` deep links stay valid.
 
 Unlisted `/all` is a flat essay list by shelf. Not on the bar. No tags, no search, no comments.
 
@@ -51,8 +51,8 @@ Focused item may scale `0.78 → 1` and unfold a short blurb beside a 144px obje
 - Viewfinder cursor: 1px corner brackets, 14px arms, ~50% opacity. Do not show empty brackets while the object image loads — placeholder or hide until ready.
 - Active item: object-icon + short name + one-line title + optional 1–2 sentence blurb.
 - Enter / click opens the essay if one exists. Arrows browse only.
-- Home URL is one shape: `/?shelf=<id>&item=<slug>`. Focus lives there; item-column vs shelf is local UI, not a second URL. Write both params whenever focus moves (↑↓ shelves, ←→ items).
-- First-visit hint: up/down chevrons + `↑↓ shelves · ←→ items · enter opens · esc back`. Gone after the first move.
+- Home URL is one shape: `/?shelf=<id>&item=<slug>`. Focus lives there; item-column vs shelf is local UI, not a second URL. Write both params whenever focus moves (↑↓ shelves, ←→ items). Shelf-query writes must keep `history.state` so the App Router stays synced with `/<shelf>/<slug>` push/replace.
+- First-visit hint: up/down chevrons + `↑↓ shelves · ←→ items · enter opens · esc back`. Stays until the first arrow/enter, and at least long enough to read (~6s). `?` shows it again. After it hides, a short idle brings it back. Do not vanish a 14-word contract in one second.
 
 ### Me card
 

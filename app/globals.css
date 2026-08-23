@@ -416,6 +416,7 @@ button {
   transform: translateX(-50%);
   color: var(--muted);
   pointer-events: none;
+  opacity: 1;
 }
 
 .hint-chevrons {

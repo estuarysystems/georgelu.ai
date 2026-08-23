@@ -1,4 +1,4 @@
-# Personal site — spec v0.3
+# Personal site — spec v0.4
 
 **Domain:** georgelu.ai
 **Owner:** George Lu

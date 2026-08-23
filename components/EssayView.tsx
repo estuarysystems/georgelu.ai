@@ -4,7 +4,7 @@ import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { inter } from "@/app/fonts";
-import { essayHref, homeHref, padFrame } from "@/lib/routes";
+import { essayHref, homeHref, padFrame, replaceHomeUrl } from "@/lib/routes";
 import { setEssaySurface } from "@/lib/surface";
 import type { EssayMeta } from "@/lib/types";
 
@@ -24,9 +24,15 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
   const closeToShelf = useCallback(() => {
     if (closing.current) return;
     closing.current = true;
+    // Kick the App Router while the window is still /shelf/slug so
+    // replace is a real navigation, then write the browse query in
+    // this same turn — before paint. A lagged path is a real break:
+    // reload/share from that window reopens the essay. Cold deep
+    // links and Enter both go through here.
+    router.replace(back, { scroll: false });
+    replaceHomeUrl(current.shelf, current.slug);
     setVisible(false);
     setEssaySurface(false);
-    router.replace(back, { scroll: false });
     // Last-resort only. A short timeout races Next.js and full-reloads
     // into a blank ME shelf. Give the replace time to mount .stage.
     window.setTimeout(() => {
@@ -34,7 +40,7 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
         window.location.replace(back);
       }
     }, 2000);
-  }, [back, router]);
+  }, [back, current.shelf, current.slug, router]);
 
   useLayoutEffect(() => {
     setEssaySurface(true);

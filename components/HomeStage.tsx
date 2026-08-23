@@ -57,7 +57,10 @@ export function HomeStage({ catalog, initialShelf, initialItem }: HomeStageProps
   const router = useRouter();
   const stageRef = useRef<HTMLDivElement>(null);
   const restored = Boolean(initialShelf || initialItem);
-  const seed = focusFrom(catalog, initialShelf, initialItem);
+  const seed = useMemo(
+    () => focusFrom(catalog, initialShelf, initialItem),
+    [catalog, initialShelf, initialItem],
+  );
   const [shelfIndex, setShelfIndex] = useState(seed.shelfIndex);
   const [itemIndex, setItemIndex] = useState(seed.itemIndex);
   const [mode, setMode] = useState<"shelf" | "item">("shelf");
@@ -128,14 +131,45 @@ export function HomeStage({ catalog, initialShelf, initialItem }: HomeStageProps
   }, []);
 
   useLayoutEffect(() => {
-    const focus = readFocus(catalog);
-    setShelfIndex(focus.shelfIndex);
-    setItemIndex(focus.itemIndex);
-    setMode("shelf");
-    const focused = catalog[focus.shelfIndex].items[focus.itemIndex];
-    if (focused) syncUrl(focused.shelf, focused.slug);
-    focusStage();
-  }, [catalog, focusStage, syncUrl]);
+    const apply = (focus: { shelfIndex: number; itemIndex: number }) => {
+      setShelfIndex(focus.shelfIndex);
+      setItemIndex(focus.itemIndex);
+      setMode("shelf");
+      focusStage();
+    };
+
+    const homeQuery = () => {
+      if (isEssayPath(window.location.pathname)) return null;
+      const params = new URLSearchParams(window.location.search);
+      if (!params.get("shelf")) return null;
+      return readFocus(catalog);
+    };
+
+    const first = homeQuery() ?? seed;
+    apply(first);
+    // Never replaceState while the essay path is still in the window —
+    // that races Escape's router.replace and can pin a stale item.
+    if (!isEssayPath(window.location.pathname) && first) {
+      const focused = catalog[first.shelfIndex].items[first.itemIndex];
+      if (focused) syncUrl(focused.shelf, focused.slug);
+    }
+
+    if (homeQuery()) return;
+
+    const poll = window.setInterval(() => {
+      const focus = homeQuery();
+      if (!focus) return;
+      apply(focus);
+      const focused = catalog[focus.shelfIndex].items[focus.itemIndex];
+      if (focused) syncUrl(focused.shelf, focused.slug);
+      window.clearInterval(poll);
+    }, 16);
+    const stop = window.setTimeout(() => window.clearInterval(poll), 1000);
+    return () => {
+      window.clearInterval(poll);
+      window.clearTimeout(stop);
+    };
+  }, [catalog, focusStage, seed, syncUrl]);
 
   useEffect(() => {
     return () => {

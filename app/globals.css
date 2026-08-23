@@ -148,10 +148,21 @@ button {
 .shelf[aria-current="true"] {
   z-index: 2;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .shelf[aria-current="true"] .shelf-body {
   min-height: min-content;
+  overflow: visible;
+}
+
+.shelf:not([aria-current="true"]) {
+  overflow: hidden;
+}
+
+.shelf:not([aria-current="true"]) .shelf-body {
+  overflow: hidden;
+  max-height: 1.6rem;
 }
 
 .shelf-label {
@@ -168,15 +179,6 @@ button {
 
 .shelf-label:active {
   transform: scale(0.97);
-}
-
-.shelf-whisper {
-  margin: 0;
-  max-width: 28ch;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
 }
 
 .shelf-body {
@@ -343,10 +345,18 @@ button {
 
 .item-status {
   margin: 0.28rem 0 0;
+  max-width: 100%;
+  overflow: hidden;
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--muted);
+}
+
+.item.is-sibling .item-status {
+  display: none;
 }
 
 .item-blurb {

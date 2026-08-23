@@ -24,7 +24,7 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
         return;
       }
       event.preventDefault();
-      router.push(back);
+      router.replace(back);
     }
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
@@ -33,11 +33,11 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
   return (
     <article className="essay">
       <header className="essay-bar">
-        <Link className="essay-back" href={back}>
+        <Link className="essay-back" href={back} replace>
           esc
         </Link>
         <span className="essay-frame">
-          {padFrame(current.frame)} / {padFrame(current.total)}
+          {padFrame(current.frame)} of {padFrame(current.total)}
         </span>
       </header>
       <div className="essay-main">
@@ -47,13 +47,13 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
       </div>
       <nav className="essay-nav" aria-label="Siblings">
         {prev ? (
-          <Link href={essayHref(prev.shelf, prev.slug)}>{prev.name.toLowerCase()}</Link>
+          <Link href={essayHref(prev.shelf, prev.slug)}>← {prev.name.toLowerCase()}</Link>
         ) : (
           <span />
         )}
         {next ? (
           <Link className="next" href={essayHref(next.shelf, next.slug)}>
-            {next.name.toLowerCase()}
+            {next.name.toLowerCase()} →
           </Link>
         ) : null}
       </nav>

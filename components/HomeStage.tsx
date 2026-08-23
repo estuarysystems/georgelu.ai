@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ObjectIcon } from "./ObjectIcon";
@@ -59,7 +67,11 @@ export function HomeStage({ catalog }: HomeStageProps) {
     window.history.replaceState(null, "", url);
   }, []);
 
-  useEffect(() => {
+  const focusStage = useCallback(() => {
+    stageRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  useLayoutEffect(() => {
     if (window.sessionStorage.getItem(HINT_KEY) === "1") setHint(false);
 
     const focus = readFocus(catalog);
@@ -68,9 +80,8 @@ export function HomeStage({ catalog }: HomeStageProps) {
     setMode("shelf");
     const focused = catalog[focus.shelfIndex].items[focus.itemIndex];
     if (focused) syncUrl(focused.shelf, focused.slug);
-
-    stageRef.current?.focus({ preventScroll: true });
-  }, [catalog, syncUrl]);
+    focusStage();
+  }, [catalog, focusStage, syncUrl]);
 
   useEffect(() => {
     function onPop() {
@@ -78,10 +89,30 @@ export function HomeStage({ catalog }: HomeStageProps) {
       setShelfIndex(focus.shelfIndex);
       setItemIndex(focus.itemIndex);
       setMode("shelf");
+      focusStage();
     }
+
+    function restoreFocus() {
+      const active = document.activeElement;
+      if (
+        !active ||
+        active === document.body ||
+        active === document.documentElement ||
+        !stageRef.current?.contains(active)
+      ) {
+        focusStage();
+      }
+    }
+
     window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
-  }, [catalog]);
+    window.addEventListener("pageshow", restoreFocus);
+    window.addEventListener("focus", restoreFocus);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      window.removeEventListener("pageshow", restoreFocus);
+      window.removeEventListener("focus", restoreFocus);
+    };
+  }, [catalog, focusStage]);
 
   const focusShelf = useCallback(
     (next: number, nextItem = 0) => {
@@ -145,6 +176,21 @@ export function HomeStage({ catalog }: HomeStageProps) {
     [focusItem, focusShelf, itemIndex, mode, shelfIndex],
   );
 
+  const moveHorizontal = useCallback(
+    (direction: 1 | -1) => {
+      if (direction > 0) {
+        if (mode === "shelf") {
+          openItems();
+          return;
+        }
+        focusItem(itemIndex + 1);
+        return;
+      }
+      closeItems();
+    },
+    [closeItems, focusItem, itemIndex, mode, openItems],
+  );
+
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -157,20 +203,25 @@ export function HomeStage({ catalog }: HomeStageProps) {
         moveVertical(-1);
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
-        if (mode === "shelf") openItems();
+        moveHorizontal(1);
+      } else if (event.key === "ArrowLeft") {
+        if (event.repeat) return;
+        event.preventDefault();
+        moveHorizontal(-1);
       } else if (event.key === "Enter") {
         event.preventDefault();
         if (item) openEssay(item);
-      } else if (event.key === "ArrowLeft" || event.key === "Escape") {
+      } else if (event.key === "Escape") {
         if (event.repeat) return;
         event.preventDefault();
         closeItems();
+        focusStage();
       }
     }
 
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [closeItems, item, mode, moveVertical, openEssay, openItems]);
+  }, [closeItems, focusStage, item, moveHorizontal, moveVertical, openEssay]);
 
   const siblings = useMemo(
     () => ({
@@ -188,6 +239,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
       role="application"
       aria-label="George Lu"
       tabIndex={-1}
+      autoFocus
     >
       <div className="stage-breath">
         <div className="stage-weave">
@@ -195,7 +247,6 @@ export function HomeStage({ catalog }: HomeStageProps) {
             {catalog.map((entry, index) => {
               const active = index === shelfIndex;
               const current = active ? item : entry.items[0];
-              const whisper = !active && entry.id === "hobby" ? current?.status : undefined;
               return (
                 <section
                   key={entry.id}
@@ -207,12 +258,14 @@ export function HomeStage({ catalog }: HomeStageProps) {
                     className="shelf-label"
                     type="button"
                     onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => focusShelf(index)}
+                    onClick={() => {
+                      focusShelf(index);
+                      focusStage();
+                    }}
                   >
                     {entry.id}
                   </button>
                   <div className="shelf-body">
-                    {whisper ? <p className="shelf-whisper">{whisper}</p> : null}
                     {active && current ? (
                       <>
                         {siblings.above ? (
@@ -222,6 +275,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
                           <Link
                             className="item-hit"
                             href={essayHref(current.shelf, current.slug)}
+                            onMouseDown={(event) => event.preventDefault()}
                             onClick={dismissHint}
                           >
                             <ObjectIcon name={current.name} file={current.object} live />
@@ -260,7 +314,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
             <span>⌃</span>
             <span>⌄</span>
           </div>
-          <div className="hint-copy">↑↓ shelves · ←→ items</div>
+          <div className="hint-copy">↑↓ shelves · ←→ items · enter opens · esc back</div>
         </div>
       ) : null}
     </div>
@@ -285,12 +339,12 @@ function Sibling({
         className="item-hit"
         href={essayHref(item.shelf, item.slug)}
         tabIndex={open ? undefined : -1}
+        onMouseDown={(event) => event.preventDefault()}
       >
         <ObjectIcon name={item.name} file={item.object} />
         <div className="item-copy">
           <p className="item-name">{item.name}</p>
           <p className="item-title">{item.title}</p>
-          {item.status ? <p className="item-status">{item.status}</p> : null}
         </div>
       </Link>
     </article>

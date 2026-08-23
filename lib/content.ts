@@ -12,6 +12,11 @@ function isShelfId(value: string): value is ShelfId {
   return (SHELF_IDS as readonly string[]).includes(value);
 }
 
+function isLiveEssay(data: EssayFrontmatter, content: string) {
+  if (data.hidden) return false;
+  return content.trim().length > 0;
+}
+
 function readEssayFiles(): { data: EssayFrontmatter; content: string; filePath: string }[] {
   const essays: { data: EssayFrontmatter; content: string; filePath: string }[] = [];
 
@@ -29,6 +34,8 @@ function readEssayFiles(): { data: EssayFrontmatter; content: string; filePath: 
       if (!isShelfId(data.shelf) || !data.slug) {
         throw new Error(`Invalid frontmatter in ${filePath}`);
       }
+
+      if (!isLiveEssay(data, parsed.content)) continue;
 
       essays.push({ data, content: parsed.content, filePath });
     }
@@ -57,7 +64,7 @@ export function getCatalog(): Shelf[] {
   return SHELF_IDS.map((id) => ({
     id,
     items: metas.filter((item) => item.shelf === id),
-  }));
+  })).filter((shelf) => shelf.items.length > 0);
 }
 
 export function getAllEssayParams(): { shelf: ShelfId; slug: string }[] {

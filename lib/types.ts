@@ -10,6 +10,8 @@ export type EssayFrontmatter = {
   title: string;
   dek?: string;
   blurb?: string;
+  status?: string;
+  hidden?: boolean;
   object: string;
   inline?: "bio";
 };

@@ -33,6 +33,9 @@ export function HomeStage({ catalog }: HomeStageProps) {
 
   const shelf = catalog[shelfIndex];
   const item = shelf.items[itemIndex] ?? shelf.items[0];
+  const nowLine = catalog
+    .find((entry) => entry.id === "me")
+    ?.items.find((entry) => entry.slug === "now")?.status;
 
   useEffect(() => {
     if (window.sessionStorage.getItem(HINT_KEY) === "1") setHint(false);
@@ -198,8 +201,11 @@ export function HomeStage({ catalog }: HomeStageProps) {
                               {current.inline === "bio" ? null : (
                                 <p className="item-title">{current.title}</p>
                               )}
+                              {current.status && current.inline !== "bio" ? (
+                                <p className="item-status">{current.status}</p>
+                              ) : null}
                               {current.inline === "bio" ? (
-                                <BioCard />
+                                <BioCard now={nowLine} />
                               ) : current.blurb ? (
                                 <p className="item-blurb">{current.blurb}</p>
                               ) : null}
@@ -244,13 +250,14 @@ function Sibling({
         <div className="item-copy">
           <p className="item-name">{item.name}</p>
           <p className="item-title">{item.title}</p>
+          {item.status ? <p className="item-status">{item.status}</p> : null}
         </div>
       </Link>
     </article>
   );
 }
 
-function BioCard() {
+function BioCard({ now }: { now?: string }) {
   return (
     <div className="bio-card">
       <p>
@@ -258,6 +265,7 @@ function BioCard() {
         through my AI agency, Estuary Systems LLC.
       </p>
       <p>I have a corgi named Biscuit.</p>
+      {now ? <p className="bio-now">{now}</p> : null}
     </div>
   );
 }

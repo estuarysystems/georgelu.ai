@@ -315,6 +315,14 @@ button {
   line-height: 1.3;
 }
 
+.item-status {
+  margin: 0.28rem 0 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .item-blurb {
   margin: 0.55rem 0 0;
   max-width: 42ch;
@@ -340,6 +348,10 @@ button {
 
 .bio-card p:last-child {
   margin-bottom: 0;
+}
+
+.bio-now {
+  color: var(--muted);
 }
 
 .bio-card ul {

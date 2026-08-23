@@ -61,7 +61,26 @@ George Lu. Bay Area. I work the intersection of business and engineering through
 
 I have a corgi named Biscuit.
 
-No claims-system line. No “stuff on my mind” list.
+Under that, a dated **Now** line (present tense, specific, replaceable). Sourced from the Now item `status`. Example: `August 2026. Shipping Estuary and this site.` Do not gut the locked bio.
+
+No claims-system line. No “stuff on my mind” list. Contact / next-step lives on Now, not a fifth shelf.
+
+### Inside-shelf priority
+
+Items inside a shelf are ordered by priority, not chronology. Current live order:
+
+| Shelf | Order |
+|-------|-------|
+| me    | George, Now, Biscuit, Library |
+| world | Dress, Pictures, Home, School |
+| work  | Claims, Estuary |
+| hobby | Cards, Server, Poker, TFT |
+
+### Hide empty
+
+Empty or coming-soon items are omitted from the bar and the catalog. Do not show a “coming soon” tile. Set `hidden: true` or leave the file out / body empty. If a shelf has no live items, omit the shelf. Shelf order when present stays me → world → work → hobby.
+
+Living hobby projects (Cards, Server; Party/mystery if they exist) carry a `status` line on the home card. Status is a fact, not a launch. Server: `Season 0 · Sakura Tide`. Cards: the next show date.
 
 ## Essay page
 
@@ -92,23 +111,24 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 ## v0 contents
 
 ### me
-- **George** — bio card (required). Object: a paperback. One line for Biscuit, his corgi.
+- **George** — bio card (required). Object: a paperback. One line for Biscuit, his corgi. Dated Now line under the locked bio.
+- **Now** — Dated, replaceable. Seed (August 2026): shipping Estuary and this site (both live), Westgate September 5–6. Contact / next-step lives here (`george@estuarysystems.ai`). Social Club lives on Poker.
 - **Biscuit** — Small me item. His corgi. Short, warm, first person. No photo until he sends pictures. Do not generate a dog photo. Reuse the me paperback; no fake object.
-- **Now** — Westgate card show (September 5–6 2026), books. Short, dated, replaceable. Social Club lives on Poker.
-- **Library** — S and A only. Do not rank inside a tier. Do not list B/C. “If it is not here I am not recommending it.” Write-ups later. S: *Poor Charlie’s Almanack* (Charlie Munger); *Broken Money* by Lyn Alden (he thinks the world runs on economics; this is how he understands it). A: none yet.
+- **Library** — S and A only. Do not rank inside a tier. Do not list B/C. “If it is not here I am not recommending it.” S: *Poor Charlie’s Almanack* (Charlie Munger); *Broken Money* by Lyn Alden (he thinks the world runs on economics; this is how he understands it). A: none yet.
 
 ### world
 - **Dress** — People embody the success they want before they take action. Dressing is one way. The room with seven suits and one person without: that person is the most important. That idea is why tech dresses casually. He thinks that is a bad thing. Dress to show you care, and that you want to be pleasant to be around.
+- **Pictures** — It is disrespectful to take pictures or videos of people. Live essay. Keep it high.
 - **Home** — Why a stay-at-home spouse matters to him. Write it as an argument about care and a life, not a culture-war post. Stay-at-home cost-comparison link later (he will add).
 - **School** — College is a bad place to send a kid and a bad way to spend years. Building and doing business in the real world is the better path. Full rewrite later (he will write it): start doing stuff, provide value, find problems; judged on solving problems, especially guys. Leave the live essay as-is until then.
 
 ### work
-- **Estuary** — One sentence only: he focuses on execution using AI and stays up to date on the latest AI tools to be efficient. Link out to https://estuarysystems.ai. No claims, no Conveyor, no clients, no dollar amounts.
-- **Claims** — Leave as-is. Do not expand. No Conveyor or client names. A system to litigate claims law firms will not take. Fighting for the small guy.
+- **Claims** — Leave as-is. Do not expand. No Conveyor or client names. A system to litigate claims law firms will not take. Fighting for the small guy. Sharpest proof; first on the shelf.
+- **Estuary** — Short handoff: he runs it; the work is at https://estuarysystems.ai. No agency jargon (“execution,” “latest tools,” “efficient”). No claims, no Conveyor, no clients, no dollar amounts.
 
 ### hobby
 - **Cards** — Pokémon. Next show: Westgate, September 5–6 2026, Saturday–Sunday. Dated, replaceable. This is a real practice, not a childhood footnote.
-- **Server** — The Minecraft server he never got to run as a kid. Building it now.
+- **Server** — The Minecraft server he never got to run as a kid. Building it now. Status: Season 0 · Sakura Tide. Not a launch.
 - **Poker** — He plays poker. SF Social Club is part of that scene. “A lot of things” stay vague. No stakes. Principles later (he will write them). Do not invent those write-ups.
 - **TFT** — Top 100 once. Set 11. One short line. A link and how it impacted him later (he will add).
 

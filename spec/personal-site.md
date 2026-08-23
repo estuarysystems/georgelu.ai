@@ -1,4 +1,4 @@
-# Personal site — spec v0.2
+# Personal site — spec v0.3
 
 **Domain:** georgelu.ai
 **Owner:** George Lu
@@ -38,6 +38,8 @@ Vertical column, top to bottom:
 | work    | What he has built for money or a client | Essay |
 | hobby   | Hobbies and things he keeps | Essay |
 
+**Label lock (v0.3):** the fourth shelf is `hobby`. Do not rename it (not making, play, life, or a fifth shelf).
+
 Default focus: **me**.
 
 Focused item may scale `0.78 → 1` and unfold a short blurb beside a 144px object-icon (88px on small screens). Unfocused shelves stay fully readable, just not expanded.
@@ -67,14 +69,16 @@ No claims-system line. No “stuff on my mind” list. Contact / next-step lives
 
 ### Inside-shelf priority
 
-Items inside a shelf are ordered by priority, not chronology. Current live order:
+Items inside a shelf are ordered by priority, not chronology.
 
 | Shelf | Order |
 |-------|-------|
-| me    | George, Now, Biscuit, Library |
-| world | Dress, Pictures, Home, School |
-| work  | Claims, Estuary |
-| hobby | Cards, Server, Poker, TFT |
+| me    | George → Now → Biscuit → Library |
+| world | Dress → Pictures → Home → School (hide empty) |
+| work  | Claims high, then Estuary |
+| hobby | Cards → Party/mystery if any → Server (Season 0 status) → Poker → TFT |
+
+Live today: no Party/mystery item, so hobby shows Cards → Server → Poker → TFT. Do not add a coming-soon Party tile.
 
 ### Hide empty
 
@@ -127,7 +131,8 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 - **Estuary** — Short handoff: he runs it; the work is at https://estuarysystems.ai. No agency jargon (“execution,” “latest tools,” “efficient”). No claims, no Conveyor, no clients, no dollar amounts.
 
 ### hobby
-- **Cards** — Pokémon. Next show: Westgate, September 5–6 2026, Saturday–Sunday. Dated, replaceable. This is a real practice, not a childhood footnote.
+- **Cards** — Pokémon. Next show: Westgate, September 5–6 2026, Saturday–Sunday. Dated, replaceable. This is a real practice, not a childhood footnote. First on the shelf.
+- **Party / mystery** — Slot after Cards if a live essay exists. Hide if empty. Do not invent it.
 - **Server** — The Minecraft server he never got to run as a kid. Building it now. Status: Season 0 · Sakura Tide. Not a launch.
 - **Poker** — He plays poker. SF Social Club is part of that scene. “A lot of things” stay vague. No stakes. Principles later (he will write them). Do not invent those write-ups.
 - **TFT** — Top 100 once. Set 11. One short line. A link and how it impacted him later (he will add).

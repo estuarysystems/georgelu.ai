@@ -26,16 +26,19 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
     closing.current = true;
     setVisible(false);
     setEssaySurface(false);
-    router.replace(back);
+    router.replace(back, { scroll: false });
+    // Last-resort only. A short timeout races Next.js and full-reloads
+    // into a blank ME shelf. Give the replace time to mount .stage.
     window.setTimeout(() => {
       if (!document.querySelector(".stage")) {
         window.location.replace(back);
       }
-    }, 200);
+    }, 2000);
   }, [back, router]);
 
   useLayoutEffect(() => {
     setEssaySurface(true);
+    router.prefetch(back);
     function onKey(event: KeyboardEvent) {
       if (event.key !== "Escape" || event.repeat || event.metaKey || event.ctrlKey || event.altKey) {
         return;
@@ -49,7 +52,7 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
       setEssaySurface(false);
       window.removeEventListener("keydown", onKey, true);
     };
-  }, [closeToShelf]);
+  }, [back, closeToShelf, router]);
 
   if (!visible) return null;
 

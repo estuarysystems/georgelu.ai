@@ -22,6 +22,8 @@ const HINT_IDLE_MS = 8000;
 
 type HomeStageProps = {
   catalog: Shelf[];
+  initialShelf?: string;
+  initialItem?: string;
 };
 
 function shelfIndexOf(catalog: Shelf[], id?: string) {
@@ -34,24 +36,35 @@ function itemIndexOf(shelf: Shelf, slug?: string) {
   return index === -1 ? 0 : index;
 }
 
-function readFocus(catalog: Shelf[]) {
-  const params = new URLSearchParams(window.location.search);
-  const shelfParam = params.get("shelf") ?? undefined;
-  const itemParam = params.get("item") ?? undefined;
-  const nextShelf = shelfIndexOf(catalog, shelfParam);
+function focusFrom(catalog: Shelf[], shelfId?: string, itemSlug?: string) {
+  const nextShelf = shelfIndexOf(catalog, shelfId);
   return {
     shelfIndex: nextShelf,
-    itemIndex: itemIndexOf(catalog[nextShelf], itemParam),
+    itemIndex: itemIndexOf(catalog[nextShelf], itemSlug),
   };
 }
 
-export function HomeStage({ catalog }: HomeStageProps) {
+function readFocus(catalog: Shelf[]) {
+  const params = new URLSearchParams(window.location.search);
+  return focusFrom(catalog, params.get("shelf") ?? undefined, params.get("item") ?? undefined);
+}
+
+function hintAlreadyUsed() {
+  return window.sessionStorage.getItem(HINT_KEY) === "1";
+}
+
+export function HomeStage({ catalog, initialShelf, initialItem }: HomeStageProps) {
   const router = useRouter();
   const stageRef = useRef<HTMLDivElement>(null);
-  const [shelfIndex, setShelfIndex] = useState(0);
-  const [itemIndex, setItemIndex] = useState(0);
+  const restored = Boolean(initialShelf || initialItem);
+  const seed = useMemo(
+    () => focusFrom(catalog, initialShelf, initialItem),
+    [catalog, initialShelf, initialItem],
+  );
+  const [shelfIndex, setShelfIndex] = useState(seed.shelfIndex);
+  const [itemIndex, setItemIndex] = useState(seed.itemIndex);
   const [mode, setMode] = useState<"shelf" | "item">("shelf");
-  const [hint, setHint] = useState(true);
+  const [hint, setHint] = useState(!restored);
   const hintShownAt = useRef(0);
   const hideHintTimer = useRef(0);
   const idleHintTimer = useRef(0);
@@ -62,23 +75,19 @@ export function HomeStage({ catalog }: HomeStageProps) {
     .find((entry) => entry.id === "me")
     ?.items.find((entry) => entry.slug === "now")?.status;
 
-  const revealHint = useCallback(() => {
-    window.clearTimeout(hideHintTimer.current);
-    window.clearTimeout(idleHintTimer.current);
-    hintShownAt.current = Date.now();
-    setHint(true);
-  }, []);
-
   const scheduleIdleHint = useCallback(() => {
     window.clearTimeout(idleHintTimer.current);
     idleHintTimer.current = window.setTimeout(() => {
       hintShownAt.current = Date.now();
       setHint(true);
+      window.clearTimeout(hideHintTimer.current);
+      hideHintTimer.current = window.setTimeout(() => {
+        setHint(false);
+      }, HINT_MIN_MS);
     }, HINT_IDLE_MS);
   }, []);
 
-  const markHintUsed = useCallback(() => {
-    window.sessionStorage.setItem(HINT_KEY, "1");
+  const armHintHide = useCallback(() => {
     const remaining = Math.max(0, HINT_MIN_MS - (Date.now() - hintShownAt.current));
     window.clearTimeout(hideHintTimer.current);
     hideHintTimer.current = window.setTimeout(() => {
@@ -86,6 +95,19 @@ export function HomeStage({ catalog }: HomeStageProps) {
       scheduleIdleHint();
     }, remaining);
   }, [scheduleIdleHint]);
+
+  const revealHint = useCallback(() => {
+    window.clearTimeout(hideHintTimer.current);
+    window.clearTimeout(idleHintTimer.current);
+    hintShownAt.current = Date.now();
+    setHint(true);
+    if (hintAlreadyUsed()) armHintHide();
+  }, [armHintHide]);
+
+  const markHintUsed = useCallback(() => {
+    window.sessionStorage.setItem(HINT_KEY, "1");
+    armHintHide();
+  }, [armHintHide]);
 
   const syncUrl = useCallback((nextShelf: Shelf["id"], nextSlug: string) => {
     replaceHomeUrl(nextShelf, nextSlug);
@@ -96,20 +118,58 @@ export function HomeStage({ catalog }: HomeStageProps) {
   }, []);
 
   useLayoutEffect(() => {
-    hintShownAt.current = Date.now();
-    if (window.sessionStorage.getItem(HINT_KEY) === "1") {
+    if (!hintShownAt.current) hintShownAt.current = Date.now();
+    if (hintAlreadyUsed()) {
       setHint(false);
       scheduleIdleHint();
+    } else if (restored) {
+      hintShownAt.current = Date.now();
+      setHint(true);
+    }
+    // Mount only. Re-running after `?` would hide the hint and make recall a no-op.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useLayoutEffect(() => {
+    const apply = (focus: { shelfIndex: number; itemIndex: number }) => {
+      setShelfIndex(focus.shelfIndex);
+      setItemIndex(focus.itemIndex);
+      setMode("shelf");
+      focusStage();
+    };
+
+    const homeQuery = () => {
+      if (isEssayPath(window.location.pathname)) return null;
+      const params = new URLSearchParams(window.location.search);
+      if (!params.get("shelf")) return null;
+      return readFocus(catalog);
+    };
+
+    const first = homeQuery() ?? seed;
+    apply(first);
+    // Never replaceState while the essay path is still in the window —
+    // that races Escape's router.replace and can pin a stale item.
+    if (!isEssayPath(window.location.pathname) && first) {
+      const focused = catalog[first.shelfIndex].items[first.itemIndex];
+      if (focused) syncUrl(focused.shelf, focused.slug);
     }
 
-    const focus = readFocus(catalog);
-    setShelfIndex(focus.shelfIndex);
-    setItemIndex(focus.itemIndex);
-    setMode("shelf");
-    const focused = catalog[focus.shelfIndex].items[focus.itemIndex];
-    if (focused) syncUrl(focused.shelf, focused.slug);
-    focusStage();
-  }, [catalog, focusStage, scheduleIdleHint, syncUrl]);
+    if (homeQuery()) return;
+
+    const poll = window.setInterval(() => {
+      const focus = homeQuery();
+      if (!focus) return;
+      apply(focus);
+      const focused = catalog[focus.shelfIndex].items[focus.itemIndex];
+      if (focused) syncUrl(focused.shelf, focused.slug);
+      window.clearInterval(poll);
+    }, 16);
+    const stop = window.setTimeout(() => window.clearInterval(poll), 1000);
+    return () => {
+      window.clearInterval(poll);
+      window.clearTimeout(stop);
+    };
+  }, [catalog, focusStage, seed, syncUrl]);
 
   useEffect(() => {
     return () => {
@@ -288,6 +348,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
       ref={stageRef}
       className="stage"
       data-mode={mode}
+      data-restore={restored ? "1" : undefined}
       role="application"
       aria-label="George Lu"
       tabIndex={-1}
@@ -359,15 +420,13 @@ export function HomeStage({ catalog }: HomeStageProps) {
         </div>
       </div>
       <div className="stage-grain" aria-hidden="true" />
-      {hint ? (
-        <div className="hint" data-hint="on">
-          <div className="hint-chevrons" aria-hidden="true">
-            <span>⌃</span>
-            <span>⌄</span>
-          </div>
-          <div className="hint-copy">↑↓ shelves · ←→ items · enter opens · esc back</div>
+      <div className="hint" data-hint={hint ? "on" : "off"} aria-hidden={!hint}>
+        <div className="hint-chevrons" aria-hidden="true">
+          <span>⌃</span>
+          <span>⌄</span>
         </div>
-      ) : null}
+        <div className="hint-copy">↑↓ shelves · ←→ items · enter opens · esc back</div>
+      </div>
     </div>
   );
 }

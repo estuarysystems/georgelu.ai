@@ -12,10 +12,13 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ObjectIcon } from "./ObjectIcon";
-import { essayHref, homeHref } from "@/lib/routes";
-import type { EssayMeta, Shelf, ShelfId } from "@/lib/types";
+import { essayHref, isEssayPath, replaceHomeUrl } from "@/lib/routes";
+import { essaySurfaceOpen } from "@/lib/surface";
+import type { EssayMeta, Shelf } from "@/lib/types";
 
-const HINT_KEY = "xmb-hint-dismissed";
+const HINT_KEY = "xmb-hint-used-keys";
+const HINT_MIN_MS = 6000;
+const HINT_IDLE_MS = 8000;
 
 type HomeStageProps = {
   catalog: Shelf[];
@@ -49,6 +52,9 @@ export function HomeStage({ catalog }: HomeStageProps) {
   const [itemIndex, setItemIndex] = useState(0);
   const [mode, setMode] = useState<"shelf" | "item">("shelf");
   const [hint, setHint] = useState(true);
+  const hintShownAt = useRef(0);
+  const hideHintTimer = useRef(0);
+  const idleHintTimer = useRef(0);
 
   const shelf = catalog[shelfIndex];
   const item = shelf.items[itemIndex] ?? shelf.items[0];
@@ -56,15 +62,33 @@ export function HomeStage({ catalog }: HomeStageProps) {
     .find((entry) => entry.id === "me")
     ?.items.find((entry) => entry.slug === "now")?.status;
 
-  const dismissHint = useCallback(() => {
-    setHint(false);
-    window.sessionStorage.setItem(HINT_KEY, "1");
+  const revealHint = useCallback(() => {
+    window.clearTimeout(hideHintTimer.current);
+    window.clearTimeout(idleHintTimer.current);
+    hintShownAt.current = Date.now();
+    setHint(true);
   }, []);
 
-  const syncUrl = useCallback((nextShelf: ShelfId, nextSlug: string) => {
-    const url = homeHref(nextShelf, nextSlug);
-    if (`${window.location.pathname}${window.location.search}` === url) return;
-    window.history.replaceState(null, "", url);
+  const scheduleIdleHint = useCallback(() => {
+    window.clearTimeout(idleHintTimer.current);
+    idleHintTimer.current = window.setTimeout(() => {
+      hintShownAt.current = Date.now();
+      setHint(true);
+    }, HINT_IDLE_MS);
+  }, []);
+
+  const markHintUsed = useCallback(() => {
+    window.sessionStorage.setItem(HINT_KEY, "1");
+    const remaining = Math.max(0, HINT_MIN_MS - (Date.now() - hintShownAt.current));
+    window.clearTimeout(hideHintTimer.current);
+    hideHintTimer.current = window.setTimeout(() => {
+      setHint(false);
+      scheduleIdleHint();
+    }, remaining);
+  }, [scheduleIdleHint]);
+
+  const syncUrl = useCallback((nextShelf: Shelf["id"], nextSlug: string) => {
+    replaceHomeUrl(nextShelf, nextSlug);
   }, []);
 
   const focusStage = useCallback(() => {
@@ -72,7 +96,11 @@ export function HomeStage({ catalog }: HomeStageProps) {
   }, []);
 
   useLayoutEffect(() => {
-    if (window.sessionStorage.getItem(HINT_KEY) === "1") setHint(false);
+    hintShownAt.current = Date.now();
+    if (window.sessionStorage.getItem(HINT_KEY) === "1") {
+      setHint(false);
+      scheduleIdleHint();
+    }
 
     const focus = readFocus(catalog);
     setShelfIndex(focus.shelfIndex);
@@ -81,7 +109,14 @@ export function HomeStage({ catalog }: HomeStageProps) {
     const focused = catalog[focus.shelfIndex].items[focus.itemIndex];
     if (focused) syncUrl(focused.shelf, focused.slug);
     focusStage();
-  }, [catalog, focusStage, syncUrl]);
+  }, [catalog, focusStage, scheduleIdleHint, syncUrl]);
+
+  useEffect(() => {
+    return () => {
+      window.clearTimeout(hideHintTimer.current);
+      window.clearTimeout(idleHintTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     function onPop() {
@@ -124,9 +159,8 @@ export function HomeStage({ catalog }: HomeStageProps) {
       setItemIndex(resolved);
       setMode("shelf");
       syncUrl(nextShelf.id, nextShelf.items[resolved].slug);
-      dismissHint();
     },
-    [catalog, dismissHint, syncUrl],
+    [catalog, syncUrl],
   );
 
   const focusItem = useCallback(
@@ -136,31 +170,27 @@ export function HomeStage({ catalog }: HomeStageProps) {
       setItemIndex(next);
       setMode("item");
       syncUrl(shelf.id, shelf.items[next].slug);
-      dismissHint();
       return true;
     },
-    [dismissHint, shelf, syncUrl],
+    [shelf, syncUrl],
   );
 
   const openItems = useCallback(() => {
     setMode("item");
     if (item) syncUrl(shelf.id, item.slug);
-    dismissHint();
-  }, [dismissHint, item, shelf, syncUrl]);
+  }, [item, shelf, syncUrl]);
 
   const closeItems = useCallback(() => {
     if (mode !== "item") return;
     setMode("shelf");
     if (item) syncUrl(shelf.id, item.slug);
-    dismissHint();
-  }, [dismissHint, item, mode, shelf, syncUrl]);
+  }, [item, mode, shelf, syncUrl]);
 
   const openEssay = useCallback(
     (target: EssayMeta) => {
-      dismissHint();
       router.push(essayHref(target.shelf, target.slug));
     },
-    [dismissHint, router],
+    [router],
   );
 
   const moveVertical = useCallback(
@@ -195,21 +225,34 @@ export function HomeStage({ catalog }: HomeStageProps) {
     function onKey(event: KeyboardEvent) {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
 
+      if (event.key === "?" || event.key === "¿") {
+        event.preventDefault();
+        revealHint();
+        return;
+      }
+
+      if (essaySurfaceOpen() || isEssayPath(window.location.pathname)) return;
+
       if (event.key === "ArrowDown") {
         event.preventDefault();
         moveVertical(1);
+        markHintUsed();
       } else if (event.key === "ArrowUp") {
         event.preventDefault();
         moveVertical(-1);
+        markHintUsed();
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
         moveHorizontal(1);
+        markHintUsed();
       } else if (event.key === "ArrowLeft") {
         if (event.repeat) return;
         event.preventDefault();
         moveHorizontal(-1);
+        markHintUsed();
       } else if (event.key === "Enter") {
         event.preventDefault();
+        markHintUsed();
         if (item) openEssay(item);
       } else if (event.key === "Escape") {
         if (event.repeat) return;
@@ -221,7 +264,16 @@ export function HomeStage({ catalog }: HomeStageProps) {
 
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [closeItems, focusStage, item, moveHorizontal, moveVertical, openEssay]);
+  }, [
+    closeItems,
+    focusStage,
+    item,
+    markHintUsed,
+    moveHorizontal,
+    moveVertical,
+    openEssay,
+    revealHint,
+  ]);
 
   const siblings = useMemo(
     () => ({
@@ -276,7 +328,6 @@ export function HomeStage({ catalog }: HomeStageProps) {
                             className="item-hit"
                             href={essayHref(current.shelf, current.slug)}
                             onMouseDown={(event) => event.preventDefault()}
-                            onClick={dismissHint}
                           >
                             <ObjectIcon name={current.name} file={current.object} live />
                             <div className="item-copy">
@@ -309,7 +360,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
       </div>
       <div className="stage-grain" aria-hidden="true" />
       {hint ? (
-        <div className="hint">
+        <div className="hint" data-hint="on">
           <div className="hint-chevrons" aria-hidden="true">
             <span>⌃</span>
             <span>⌄</span>

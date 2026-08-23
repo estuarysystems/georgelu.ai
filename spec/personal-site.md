@@ -38,7 +38,7 @@ Vertical column, top to bottom:
 | work    | What he has built for money or a client | Essay |
 | hobby   | Hobbies and things he keeps | Essay |
 
-**Label lock (v0.3):** the fourth shelf is `hobby`. Do not rename it (not making, play, life, or a fifth shelf).
+**Label lock (v0.3):** the fourth shelf is `hobby` everywhere — id, label, nav, and copy. `making` is retired; do not show it on the bar or in routes. Do not rename `hobby` (not making, play, life, or a fifth shelf). Order stays me → world → work → hobby.
 
 Default focus: **me**.
 

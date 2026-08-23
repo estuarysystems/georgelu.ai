@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties }
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ObjectIcon } from "./ObjectIcon";
-import { essayHref } from "@/lib/routes";
+import { essayHref, homeHref } from "@/lib/routes";
 import type { EssayMeta, Shelf, ShelfId } from "@/lib/types";
 
 const HINT_KEY = "xmb-hint-dismissed";
@@ -23,6 +23,17 @@ function itemIndexOf(shelf: Shelf, slug?: string) {
   return index === -1 ? 0 : index;
 }
 
+function readFocus(catalog: Shelf[]) {
+  const params = new URLSearchParams(window.location.search);
+  const shelfParam = params.get("shelf") ?? undefined;
+  const itemParam = params.get("item") ?? undefined;
+  const nextShelf = shelfIndexOf(catalog, shelfParam);
+  return {
+    shelfIndex: nextShelf,
+    itemIndex: itemIndexOf(catalog[nextShelf], itemParam),
+  };
+}
+
 export function HomeStage({ catalog }: HomeStageProps) {
   const router = useRouter();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -37,34 +48,40 @@ export function HomeStage({ catalog }: HomeStageProps) {
     .find((entry) => entry.id === "me")
     ?.items.find((entry) => entry.slug === "now")?.status;
 
-  useEffect(() => {
-    if (window.sessionStorage.getItem(HINT_KEY) === "1") setHint(false);
-
-    const params = new URLSearchParams(window.location.search);
-    const shelfParam = params.get("shelf") ?? undefined;
-    const itemParam = params.get("item") ?? undefined;
-    if (shelfParam) {
-      const nextShelf = shelfIndexOf(catalog, shelfParam);
-      setShelfIndex(nextShelf);
-      setItemIndex(itemIndexOf(catalog[nextShelf], itemParam));
-      if (itemParam) setMode("item");
-    }
-
-    stageRef.current?.focus({ preventScroll: true });
-  }, [catalog]);
-
   const dismissHint = useCallback(() => {
     setHint(false);
     window.sessionStorage.setItem(HINT_KEY, "1");
   }, []);
 
-  const syncUrl = useCallback(
-    (nextShelf: ShelfId, nextSlug: string) => {
-      const url = `/?shelf=${nextShelf}&item=${nextSlug}`;
-      window.history.replaceState(null, "", url);
-    },
-    [],
-  );
+  const syncUrl = useCallback((nextShelf: ShelfId, nextSlug: string) => {
+    const url = homeHref(nextShelf, nextSlug);
+    if (`${window.location.pathname}${window.location.search}` === url) return;
+    window.history.replaceState(null, "", url);
+  }, []);
+
+  useEffect(() => {
+    if (window.sessionStorage.getItem(HINT_KEY) === "1") setHint(false);
+
+    const focus = readFocus(catalog);
+    setShelfIndex(focus.shelfIndex);
+    setItemIndex(focus.itemIndex);
+    setMode("shelf");
+    const focused = catalog[focus.shelfIndex].items[focus.itemIndex];
+    if (focused) syncUrl(focused.shelf, focused.slug);
+
+    stageRef.current?.focus({ preventScroll: true });
+  }, [catalog, syncUrl]);
+
+  useEffect(() => {
+    function onPop() {
+      const focus = readFocus(catalog);
+      setShelfIndex(focus.shelfIndex);
+      setItemIndex(focus.itemIndex);
+      setMode("shelf");
+    }
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [catalog]);
 
   const focusShelf = useCallback(
     (next: number, nextItem = 0) => {
@@ -94,6 +111,19 @@ export function HomeStage({ catalog }: HomeStageProps) {
     [dismissHint, shelf, syncUrl],
   );
 
+  const openItems = useCallback(() => {
+    setMode("item");
+    if (item) syncUrl(shelf.id, item.slug);
+    dismissHint();
+  }, [dismissHint, item, shelf, syncUrl]);
+
+  const closeItems = useCallback(() => {
+    if (mode !== "item") return;
+    setMode("shelf");
+    if (item) syncUrl(shelf.id, item.slug);
+    dismissHint();
+  }, [dismissHint, item, mode, shelf, syncUrl]);
+
   const openEssay = useCallback(
     (target: EssayMeta) => {
       dismissHint();
@@ -107,8 +137,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
       if (mode === "item") {
         const nextItem = itemIndex + direction;
         if (focusItem(nextItem)) return;
-        const nextShelf = shelfIndex + direction;
-        focusShelf(nextShelf, direction > 0 ? 0 : -1);
+        focusShelf(shelfIndex + direction, direction > 0 ? 0 : -1);
         return;
       }
       focusShelf(shelfIndex + direction, direction > 0 ? 0 : -1);
@@ -126,40 +155,36 @@ export function HomeStage({ catalog }: HomeStageProps) {
       } else if (event.key === "ArrowUp") {
         event.preventDefault();
         moveVertical(-1);
-      } else if (event.key === "ArrowRight" || event.key === "Enter") {
+      } else if (event.key === "ArrowRight") {
         event.preventDefault();
-        if (mode === "shelf") {
-          setMode("item");
-          dismissHint();
-        } else if (item) {
-          openEssay(item);
-        }
+        if (mode === "shelf") openItems();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (item) openEssay(item);
       } else if (event.key === "ArrowLeft" || event.key === "Escape") {
         if (event.repeat) return;
         event.preventDefault();
-        if (mode === "item") {
-          setMode("shelf");
-          dismissHint();
-        }
+        closeItems();
       }
     }
 
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [dismissHint, item, mode, moveVertical, openEssay]);
+  }, [closeItems, item, mode, moveVertical, openEssay, openItems]);
 
-  const siblings = useMemo(() => {
-    if (mode !== "item") return { above: undefined, below: undefined };
-    return {
+  const siblings = useMemo(
+    () => ({
       above: shelf.items[itemIndex - 1],
       below: shelf.items[itemIndex + 1],
-    };
-  }, [itemIndex, mode, shelf.items]);
+    }),
+    [itemIndex, shelf.items],
+  );
 
   return (
     <div
       ref={stageRef}
       className="stage"
+      data-mode={mode}
       role="application"
       aria-label="George Lu"
       tabIndex={-1}
@@ -170,6 +195,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
             {catalog.map((entry, index) => {
               const active = index === shelfIndex;
               const current = active ? item : entry.items[0];
+              const whisper = !active && entry.id === "hobby" ? current?.status : undefined;
               return (
                 <section
                   key={entry.id}
@@ -186,9 +212,12 @@ export function HomeStage({ catalog }: HomeStageProps) {
                     {entry.id}
                   </button>
                   <div className="shelf-body">
+                    {whisper ? <p className="shelf-whisper">{whisper}</p> : null}
                     {active && current ? (
                       <>
-                        {siblings.above ? <Sibling item={siblings.above} place="above" /> : null}
+                        {siblings.above ? (
+                          <Sibling item={siblings.above} place="above" open={mode === "item"} />
+                        ) : null}
                         <article className="item is-open">
                           <Link
                             className="item-hit"
@@ -212,7 +241,9 @@ export function HomeStage({ catalog }: HomeStageProps) {
                             </div>
                           </Link>
                         </article>
-                        {siblings.below ? <Sibling item={siblings.below} place="below" /> : null}
+                        {siblings.below ? (
+                          <Sibling item={siblings.below} place="below" open={mode === "item"} />
+                        ) : null}
                       </>
                     ) : null}
                   </div>
@@ -229,7 +260,7 @@ export function HomeStage({ catalog }: HomeStageProps) {
             <span>⌃</span>
             <span>⌄</span>
           </div>
-          <div className="hint-copy">arrow keys or click</div>
+          <div className="hint-copy">↑↓ shelves · ←→ items</div>
         </div>
       ) : null}
     </div>
@@ -239,13 +270,22 @@ export function HomeStage({ catalog }: HomeStageProps) {
 function Sibling({
   item,
   place,
+  open,
 }: {
   item: EssayMeta;
   place: "above" | "below";
+  open: boolean;
 }) {
   return (
-    <article className={`item is-sibling is-${place}`}>
-      <Link className="item-hit" href={essayHref(item.shelf, item.slug)}>
+    <article
+      className={`item is-sibling is-${place}${open ? " is-shown" : ""}`}
+      aria-hidden={open ? undefined : true}
+    >
+      <Link
+        className="item-hit"
+        href={essayHref(item.shelf, item.slug)}
+        tabIndex={open ? undefined : -1}
+      >
         <ObjectIcon name={item.name} file={item.object} />
         <div className="item-copy">
           <p className="item-name">{item.name}</p>

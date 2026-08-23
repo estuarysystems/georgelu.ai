@@ -18,6 +18,10 @@
     --muted: oklch(0.68 0.01 80);
     --line: oklch(0.91 0.008 90 / 0.18);
   }
+
+  .object-icon.is-pending {
+    background-color: oklch(0.91 0.008 90 / 0.08);
+  }
 }
 
 @media (max-width: 720px) {
@@ -166,6 +170,15 @@ button {
   transform: scale(0.97);
 }
 
+.shelf-whisper {
+  margin: 0;
+  max-width: 28ch;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .shelf-body {
   position: relative;
   z-index: 1;
@@ -194,7 +207,15 @@ button {
   left: 0;
   right: 0;
   z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.78) translateY(6px);
+}
+
+.item.is-sibling.is-shown {
+  opacity: 1;
   pointer-events: auto;
+  transform: scale(0.78) translateY(0);
 }
 
 .item.is-sibling.is-above {
@@ -235,6 +256,11 @@ button {
   background-size: contain;
   background-position: center;
   filter: grayscale(0.92) contrast(1.04);
+}
+
+.object-icon.is-pending {
+  background-image: none;
+  background-color: oklch(0.22 0.012 80 / 0.06);
 }
 
 .object-icon.is-live::after {
@@ -642,11 +668,10 @@ button {
     transition: opacity var(--dur) linear;
   }
 
-  .item {
-    transform: none;
-  }
-
-  .item.is-open {
+  .item,
+  .item.is-open,
+  .item.is-sibling,
+  .item.is-sibling.is-shown {
     transform: none;
   }
 }

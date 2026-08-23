@@ -42,7 +42,7 @@ export function EssayView({ current, prev, next, children }: EssayViewProps) {
       </header>
       <div className="essay-main">
         <h1 className="essay-title">{current.title}</h1>
-        {current.dek ? <p className="essay-dek">{current.dek}</p> : null}
+        {current.dek?.trim() ? <p className="essay-dek">{current.dek}</p> : null}
         <div className={`prose ${inter.className}`}>{children}</div>
       </div>
       <nav className="essay-nav" aria-label="Siblings">

@@ -21,9 +21,9 @@ Bitcoin is not a shelf item yet. Library holds *Broken Money*. A world essay (co
 
 Two surfaces only.
 
-**Home.** Full viewport (`100dvh`). Four shelves in a **vertical column**, top to bottom. All four stay at full opacity. No distance fade, no blur-on-distance. Up/down changes shelf. Enter or right opens that shelf’s items; up/down then moves items. Mouse and touch: click/tap. Keyboard is first-class (arrows, enter, escape).
+**Home.** Full viewport (`100dvh`). Four shelves in a **vertical column**, top to bottom. All four stay at full opacity. No distance fade, no blur-on-distance. Up/down browses shelves (and items once a shelf is open). Right opens that shelf’s items; left or Escape returns to the shelf. Enter or click opens the essay. ArrowRight never opens an essay. Mouse and touch: click/tap. Keyboard is first-class (arrows, enter, escape).
 
-**Essay.** A normal reading page. Back returns to the same focus you left. Prev/next siblings on the same shelf.
+**Essay.** A normal reading page. One Escape / Back returns to the same home URL (`/?shelf=&item=`) in shelf mode, with the collapse visible. Prev/next siblings on the same shelf.
 
 Unlisted `/all` is a flat essay list by shelf. Not on the bar. No tags, no search, no comments.
 
@@ -48,10 +48,11 @@ Focused item may scale `0.78 → 1` and unfold a short blurb beside a 144px obje
 
 - Stage is one scene. No document scroll.
 - Shelf column on the left. All four labels visible, tracked, small, capitalized.
-- Viewfinder cursor: 1px corner brackets, 14px arms, ~50% opacity.
+- Viewfinder cursor: 1px corner brackets, 14px arms, ~50% opacity. Do not show empty brackets while the object image loads — placeholder or hide until ready.
 - Active item: object-icon + short name + one-line title + optional 1–2 sentence blurb.
-- Enter / click opens the essay if one exists.
-- First-visit hint: up/down chevrons + `arrow keys or click`. Gone after the first move.
+- Enter / click opens the essay if one exists. Arrows browse only.
+- Home URL is one shape: `/?shelf=<id>&item=<slug>`. Focus lives there; item-column vs shelf is local UI, not a second URL.
+- First-visit hint: up/down chevrons + `↑↓ shelves · ←→ items`. Gone after the first move.
 
 ### Me card
 
@@ -90,7 +91,7 @@ Living hobby projects (Cards, Server; Party/mystery if they exist) carry a `stat
 
 - Max width ~640–720px. Prose column `58ch`.
 - Top bar: `esc` / back, frame number (`03 / 13`).
-- Title, optional dek, body. Images are objects, not heroes.
+- Title, optional dek, body. Skip a grey dek that only repeats the first sentence. Images are objects, not heroes.
 - Footer: prev / next on the same shelf, lowercase.
 - No share, no related, no comments.
 
@@ -117,7 +118,7 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 ### me
 - **George** — bio card (required). Object: a paperback. One line for Biscuit, his corgi. Dated Now line under the locked bio.
 - **Now** — Dated, replaceable. Seed: `Aug 2026 — Building Estuary Systems and shipping estuarysystems.ai as a plain company site.` Thin handoff: `Company work is at estuarysystems.ai.` Westgate September 5–6. Contact / next-step lives here (`george@estuarysystems.ai`). Social Club lives on Poker.
-- **Biscuit** — Small me item. His corgi. Short, warm, first person. No photo until he sends pictures. Do not generate a dog photo. Reuse the me paperback; no fake object.
+- **Biscuit** — Small me item. His corgi. Short, warm, first person. No “Pictures later” / TODO line. Photos only when there are real ones; do not generate a dog photo. Reuse the me paperback; no fake object.
 - **Library** — S and A only. Do not rank inside a tier. Do not list B/C. “If it is not here I am not recommending it.” S: *Poor Charlie’s Almanack* (Charlie Munger); *Broken Money* by Lyn Alden (he thinks the world runs on economics; this is how he understands it). A: none yet.
 
 ### world

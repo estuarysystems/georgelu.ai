@@ -63,7 +63,7 @@ George Lu. Bay Area. I work the intersection of business and engineering through
 
 I have a corgi named Biscuit.
 
-Under that, a dated **Now** line (present tense, specific, replaceable). Sourced from the Now item `status`. Example: `August 2026. Shipping Estuary and this site.` Do not gut the locked bio.
+Under that, a dated **Now** line (present tense, specific, replaceable). Sourced from the Now item `status`. Locked copy: `Aug 2026 — Building Estuary Systems and shipping estuarysystems.ai as a plain company site.` Do not gut the locked bio. Optional thin handoff (Now / Estuary, not a pitch): `Company work is at estuarysystems.ai.` Never use “Hi I'm George / bring execution to you and your team / review your systems.”
 
 No claims-system line. No “stuff on my mind” list. Contact / next-step lives on Now, not a fifth shelf.
 
@@ -116,7 +116,7 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 
 ### me
 - **George** — bio card (required). Object: a paperback. One line for Biscuit, his corgi. Dated Now line under the locked bio.
-- **Now** — Dated, replaceable. Seed (August 2026): shipping Estuary and this site (both live), Westgate September 5–6. Contact / next-step lives here (`george@estuarysystems.ai`). Social Club lives on Poker.
+- **Now** — Dated, replaceable. Seed: `Aug 2026 — Building Estuary Systems and shipping estuarysystems.ai as a plain company site.` Thin handoff: `Company work is at estuarysystems.ai.` Westgate September 5–6. Contact / next-step lives here (`george@estuarysystems.ai`). Social Club lives on Poker.
 - **Biscuit** — Small me item. His corgi. Short, warm, first person. No photo until he sends pictures. Do not generate a dog photo. Reuse the me paperback; no fake object.
 - **Library** — S and A only. Do not rank inside a tier. Do not list B/C. “If it is not here I am not recommending it.” S: *Poor Charlie’s Almanack* (Charlie Munger); *Broken Money* by Lyn Alden (he thinks the world runs on economics; this is how he understands it). A: none yet.
 

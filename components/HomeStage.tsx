@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ObjectIcon } from "./ObjectIcon";
-import { essayHref, isEssayPath, replaceHomeUrl } from "@/lib/routes";
+import { essayHref, isEssayPath, parseEssayPath, replaceHomeUrl } from "@/lib/routes";
 import { essaySurfaceOpen } from "@/lib/surface";
 import type { EssayMeta, Shelf } from "@/lib/types";
 
@@ -145,14 +145,18 @@ export function HomeStage({ catalog, initialShelf, initialItem }: HomeStageProps
       return readFocus(catalog);
     };
 
-    const first = homeQuery() ?? seed;
+    // Home can commit before router.replace updates the window. If the
+    // essay path is still up, write that essay's browse query — never
+    // the default first item (that pinned ME in #16).
+    const essayFocus = () => {
+      const parts = parseEssayPath(window.location.pathname);
+      return parts ? focusFrom(catalog, parts.shelf, parts.slug) : null;
+    };
+
+    const first = homeQuery() ?? essayFocus() ?? seed;
     apply(first);
-    // Never replaceState while the essay path is still in the window —
-    // that races Escape's router.replace and can pin a stale item.
-    if (!isEssayPath(window.location.pathname) && first) {
-      const focused = catalog[first.shelfIndex].items[first.itemIndex];
-      if (focused) syncUrl(focused.shelf, focused.slug);
-    }
+    const focused = catalog[first.shelfIndex].items[first.itemIndex];
+    if (focused) syncUrl(focused.shelf, focused.slug);
 
     if (homeQuery()) return;
 

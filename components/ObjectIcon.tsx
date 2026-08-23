@@ -9,41 +9,61 @@ type ObjectIconProps = {
 };
 
 export function ObjectIcon({ name, file, live = false }: ObjectIconProps) {
-  const [ready, setReady] = useState(false);
+  const [stillReady, setStillReady] = useState(false);
+  const [stripReady, setStripReady] = useState(false);
   const still = `/objects/${file}.png`;
+  const strip = `/objects/${file}-strip.webp`;
 
   useEffect(() => {
     let cancelled = false;
-    const image = new Image();
-    image.onload = () => {
-      if (!cancelled) setReady(true);
+    setStillReady(false);
+    setStripReady(false);
+
+    const stillImage = new Image();
+    stillImage.onload = () => {
+      if (!cancelled) setStillReady(true);
     };
-    image.onerror = () => {
-      if (!cancelled) setReady(false);
+    stillImage.onerror = () => {
+      if (!cancelled) setStillReady(false);
     };
-    image.src = still;
+    stillImage.src = still;
+
+    const stripImage = new Image();
+    stripImage.onload = () => {
+      if (!cancelled) setStripReady(true);
+    };
+    stripImage.onerror = () => {
+      if (!cancelled) setStripReady(false);
+    };
+    stripImage.src = strip;
+
     return () => {
       cancelled = true;
-      image.onload = null;
-      image.onerror = null;
+      stillImage.onload = null;
+      stillImage.onerror = null;
+      stripImage.onload = null;
+      stripImage.onerror = null;
     };
-  }, [still]);
+  }, [still, strip]);
+
+  const show = stillReady;
+  const animate = live && stillReady && stripReady;
 
   return (
     <div
-      className={`object-icon${ready ? " is-ready" : " is-pending"}${live && ready ? " is-live" : ""}`}
+      className={`object-icon${show ? " is-ready" : " is-pending"}${animate ? " is-live" : ""}`}
       style={
-        ready
+        show
           ? ({
               "--object-still": `url(${still})`,
-              "--object-strip": `url(/objects/${file}-strip.webp)`,
+              "--object-strip": `url(${strip})`,
             } as CSSProperties)
           : undefined
       }
       role="img"
       aria-label={name}
     >
-      {live && ready ? (
+      {live && show ? (
         <span className="viewfinder" aria-hidden="true">
           <i className="tl" />
           <i className="tr" />

@@ -23,7 +23,7 @@ Two surfaces only.
 
 **Home.** Full viewport (`100dvh`). Four shelves in a **vertical column**, top to bottom. All four stay at full opacity. No distance fade, no blur-on-distance. Up/down browses shelves (and items once a shelf is open). Right opens that shelf’s items; left or Escape returns to the shelf. Enter or click opens the essay. ArrowRight never opens an essay. Mouse and touch: click/tap. Keyboard is first-class (arrows, enter, escape).
 
-**Essay.** A normal reading page. One Escape / Back returns to the same home URL (`/?shelf=&item=`) in shelf mode, with the collapse visible. Prev/next siblings on the same shelf.
+**Essay.** A normal reading page. Shareable path is `/<shelf>/<slug>`. One Escape / Back `replace`s to the same home URL (`/?shelf=&item=`) in shelf mode, with the collapse visible — so Back never bounces between the two shapes. Prev/next siblings on the same shelf.
 
 Unlisted `/all` is a flat essay list by shelf. Not on the bar. No tags, no search, no comments.
 
@@ -51,8 +51,8 @@ Focused item may scale `0.78 → 1` and unfold a short blurb beside a 144px obje
 - Viewfinder cursor: 1px corner brackets, 14px arms, ~50% opacity. Do not show empty brackets while the object image loads — placeholder or hide until ready.
 - Active item: object-icon + short name + one-line title + optional 1–2 sentence blurb.
 - Enter / click opens the essay if one exists. Arrows browse only.
-- Home URL is one shape: `/?shelf=<id>&item=<slug>`. Focus lives there; item-column vs shelf is local UI, not a second URL.
-- First-visit hint: up/down chevrons + `↑↓ shelves · ←→ items`. Gone after the first move.
+- Home URL is one shape: `/?shelf=<id>&item=<slug>`. Focus lives there; item-column vs shelf is local UI, not a second URL. Write both params whenever focus moves (↑↓ shelves, ←→ items).
+- First-visit hint: up/down chevrons + `↑↓ shelves · ←→ items · enter opens · esc back`. Gone after the first move.
 
 ### Me card
 
@@ -85,14 +85,14 @@ Live today: no Party/mystery item, so hobby shows Cards → Server → Poker →
 
 Empty or coming-soon items are omitted from the bar and the catalog. Do not show a “coming soon” tile. Set `hidden: true` or leave the file out / body empty. If a shelf has no live items, omit the shelf. Shelf order when present stays me → world → work → hobby.
 
-Living hobby projects (Cards, Server; Party/mystery if they exist) carry a `status` line on the home card. Status is a fact, not a launch. Server: `Season 0 · Sakura Tide`. Cards: the next show date.
+Living hobby projects (Cards, Server; Party/mystery if they exist) carry a `status` line on the focused home card only. Status is a fact, not a launch. Server: `Season 0 · Sakura Tide`. Cards: the next show date. Do not paint a status whisper on unfocused shelves — it overprints neighboring titles at short viewports.
 
 ## Essay page
 
 - Max width ~640–720px. Prose column `58ch`.
-- Top bar: `esc` / back, frame number (`03 / 13`).
+- Top bar: `esc` / back, frame number (`03 of 13`).
 - Title, optional dek, body. Skip a grey dek that only repeats the first sentence. Images are objects, not heroes.
-- Footer: prev / next on the same shelf, lowercase.
+- Footer: prev / next on the same shelf, lowercase, with a leading or trailing arrow.
 - No share, no related, no comments.
 
 ## Visual system

@@ -60,11 +60,13 @@ The only home card that may hold a short essay in place. Longer bio is an essay.
 
 **Bio (locked, his voice):**
 
-George Lu. Bay Area. I work the intersection of business and engineering through my AI agency, Estuary Systems LLC.
+George Lu. Bay Area.
+
+I run Estuary Systems LLC — an AI agency at the intersection of business and engineering.
 
 I have a corgi named Biscuit.
 
-Under that, a dated **Now** line (present tense, specific, replaceable). Sourced from the Now item `status`. Locked copy: `Aug 2026 — Building Estuary Systems and shipping estuarysystems.ai as a plain company site.` Do not gut the locked bio. Optional thin handoff (Now / Estuary, not a pitch): `Company work is at estuarysystems.ai.` Never use “Hi I'm George / bring execution to you and your team / review your systems.”
+Under that, a dated **Now** line (present tense, specific, replaceable). Sourced from the Now item `status`. Locked copy: `Sep 2026 — Building Estuary Systems. Company site: estuarysystems.ai.` Do not gut the locked bio. Never use “Hi I'm George / bring execution to you and your team / review your systems.”
 
 No claims-system line. No “stuff on my mind” list. Contact / next-step lives on Now, not a fifth shelf.
 
@@ -76,7 +78,7 @@ Items inside a shelf are ordered by priority, not chronology.
 |-------|-------|
 | me    | George → Now → Biscuit → Library |
 | world | Dress → Pictures → Home → School (hide empty) |
-| work  | Claims high, then Estuary |
+| work  | Claims high, then Estuary, then Business sense |
 | hobby | Cards → Party/mystery if any → Server (Season 0 status) → Poker → TFT |
 
 Live today: no Party/mystery item, so hobby shows Cards → Server → Poker → TFT. Do not add a coming-soon Party tile.
@@ -117,25 +119,26 @@ Warm. Direct. First person. Short sentences. One idea per essay. He can be sharp
 
 ### me
 - **George** — bio card (required). Object: a paperback. One line for Biscuit, his corgi. Dated Now line under the locked bio.
-- **Now** — Dated, replaceable. Seed: `Aug 2026 — Building Estuary Systems and shipping estuarysystems.ai as a plain company site.` Thin handoff: `Company work is at estuarysystems.ai.` Westgate September 5–6. Contact / next-step lives here (`george@estuarysystems.ai`). Social Club lives on Poker.
+- **Now** — Dated, replaceable. Seed: `Sep 2026 — Building Estuary Systems. Company site: estuarysystems.ai.` Westgate was Sep 5–6. Next: Collect-A-Con, Sep 12–13. Contact / next-step lives here (`george@estuarysystems.ai`). Social Club lives on Poker.
 - **Biscuit** — Small me item. His corgi. Short, warm, first person. No “Pictures later” / TODO line. Photos only when there are real ones; do not generate a dog photo. Reuse the me paperback; no fake object.
-- **Library** — S and A only. Do not rank inside a tier. Do not list B/C. “If it is not here I am not recommending it.” S: *Poor Charlie’s Almanack* (Charlie Munger); *Broken Money* by Lyn Alden (he thinks the world runs on economics; this is how he understands it). A: none yet.
+- **Library** — S and A only. Do not rank inside a tier. Do not list B/C. “If it is not here, I am not recommending it.” S: *Poor Charlie's Almanack* — Charlie Munger (he thinks the world runs on economics; this is how he understands it); *Broken Money* — Lyn Alden (same reason). A: none yet.
 
 ### world
-- **Dress** — People embody the success they want before they take action. Dressing is one way. The room with seven suits and one person without: that person is the most important. That idea is why tech dresses casually. He thinks that is a bad thing. Dress to show you care, and that you want to be pleasant to be around.
-- **Pictures** — It is disrespectful to take pictures or videos of people. Live essay. Keep it high.
-- **Home** — Why a stay-at-home spouse matters to him. Write it as an argument about care and a life, not a culture-war post. Stay-at-home cost-comparison link later (he will add).
-- **School** — College is a bad place to send a kid and a bad way to spend years. Building and doing business in the real world is the better path. Full rewrite later (he will write it): start doing stuff, provide value, find problems; judged on solving problems, especially guys. Leave the live essay as-is until then.
+- **Dress** — People often embody the success they want before they earn it. Dress is one way. Seven people in suits, one without: that person is usually the most important. That idea leaked into tech as a casual “successful engineer” costume. He thinks that is a bad equilibrium. Dress like you care how you show up; dress like you intend to be pleasant to be around.
+- **Pictures** — It is disrespectful to take pictures or videos of people who did not ask. Keep the Killer Kodaks link. Live essay. Keep it high.
+- **Home** — A home that is kept, not staged. A stay-at-home spouse is not a luxury brand and not a political costume. He is building toward that household. Care is work. A dual-career grind is not the same thing as a family.
+- **School** — College is a bad default place to send a kid and a bad default way to spend years. Better path: apprenticeship, a business, a tool someone will pay for. He will not send a kid into debt to “find themselves.”
 
 ### work
-- **Claims** — Leave as-is. Do not expand. No Conveyor or client names. A system to litigate claims law firms will not take. Fighting for the small guy. Sharpest proof; first on the shelf.
-- **Estuary** — Short handoff: he runs it; the work is at https://estuarysystems.ai. No agency jargon (“execution,” “latest tools,” “efficient”). No claims, no Conveyor, no clients, no dollar amounts.
+- **Claims** — A lot of good claims never get taken. Building software so those claims can still be litigated. No Conveyor, no client names, no dollar amounts, no retainers. Sharpest proof; first on the shelf.
+- **Estuary** — He runs it. Help companies catch up on AI without getting lost in tools. Company site: https://estuarysystems.ai. No agency jargon (“execution,” “latest tools,” “efficient”). No claims, no Conveyor, no clients, no dollar amounts, no retainers.
+- **Business sense** — After Estuary. Done-With-You. Using AI well is business sense, not a prompt trick. Contact: george@estuarysystems.ai. No client names, no dollar amounts, no retainers.
 
 ### hobby
-- **Cards** — Pokémon. Next show: Westgate, September 5–6 2026, Saturday–Sunday. Dated, replaceable. This is a real practice, not a childhood footnote. First on the shelf.
+- **Cards** — Pokémon cards. Monthly shows. Practice, not a portfolio. Westgate was Sep 5–6, 2026. Collect-A-Con is Sep 12–13. First on the shelf.
 - **Party / mystery** — Slot after Cards if a live essay exists. Hide if empty. Do not invent it.
-- **Server** — The Minecraft server he never got to run as a kid. Building it now. Status: Season 0 · Sakura Tide. Not a launch.
-- **Poker** — He plays poker. SF Social Club is part of that scene. “A lot of things” stay vague. No stakes. Principles later (he will write them). Do not invent those write-ups.
+- **Server** — Minecraft. Season 0: Sakura Tide. Delayed on purpose until it deserves to be on. Status: Season 0 · Sakura Tide. Not a launch.
+- **Poker** — SF Social Club. Poker is how you find out how you act when it costs something. Then you go home. No stakes.
 - **TFT** — Top 100 once. Set 11. One short line. A link and how it impacted him later (he will add).
 
 Sports (bouldering, badminton) stay off the bar until there is something to say besides “I do this.”

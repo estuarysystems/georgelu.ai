@@ -468,9 +468,10 @@ function Sibling({
 function BioCard({ now }: { now?: string }) {
   return (
     <div className="bio-card">
+      <p>George Lu. Bay Area.</p>
       <p>
-        George Lu. Bay Area. I work the intersection of business and engineering
-        through my AI agency, Estuary Systems LLC.
+        I run Estuary Systems LLC — an AI agency at the intersection of business
+        and engineering.
       </p>
       <p>I have a corgi named Biscuit.</p>
       {now ? <p className="bio-now">{now}</p> : null}

@@ -41,4 +41,4 @@ Turn off Website Builder / Launching Soon first so GoDaddy stops serving its par
 
 ## Contents
 
-Thirteen essays on four shelves. Unlisted `/all` lists every essay by shelf. Theme follows the system (auto). Accent color is light-mode links only.
+Fourteen essays on four shelves. Unlisted `/all` lists every essay by shelf. Theme follows the system (auto). Accent color is light-mode links only.
